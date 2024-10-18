@@ -3,7 +3,7 @@
 
 ## Description
 
-Um plugin do Flutter que realiza a digitalização de documentos, usando o ML Kit no Android e o Vision Kit no iOS.
+A Flutter plugin that performs document scanning, using ML Kit on Android and Vision Kit on iOS.
 
 ---
 
