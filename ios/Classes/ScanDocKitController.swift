@@ -12,9 +12,11 @@ import Flutter
 @available(iOS 13.0, *)
 class ScanDocKitController:UIViewController, VNDocumentCameraViewControllerDelegate{
     let result : FlutterResult
+    let compressionQuality : CGFloat
     
-    init(result: @escaping FlutterResult) {
+    init(result: @escaping FlutterResult,compressionQuality: CGFloat ) {
         self.result = result
+        self.compressionQuality = compressionQuality
         super.init(nibName: nil, bundle: nil)
     }
     required init?(coder: NSCoder) {
@@ -42,11 +44,11 @@ class ScanDocKitController:UIViewController, VNDocumentCameraViewControllerDeleg
     }
     
     func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
-        
+      
         var flutterImgData: [FlutterStandardTypedData] = []
         for i in 0 ..< scan.pageCount{
             let image = scan.imageOfPage(at: i)
-            if let imageData = image.jpegData(compressionQuality: 1) {
+            if let imageData = image.jpegData(compressionQuality: compressionQuality) {
                 flutterImgData.append(FlutterStandardTypedData(bytes: imageData))
             }else{
                 print("Erro convert image to jpeg")

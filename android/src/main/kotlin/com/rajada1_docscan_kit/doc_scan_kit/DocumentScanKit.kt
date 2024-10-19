@@ -3,6 +3,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.IntentSender
 import android.util.Log
+import com.google.android.gms.common.internal.Objects
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.PluginRegistry
@@ -23,16 +24,27 @@ class DocumentScanKit : MethodChannel.MethodCallHandler, PluginRegistry.Activity
         binding.addActivityResultListener(this)
     }
 
-
-        private fun scanner(result:MethodChannel.Result){
+        private fun makeScanMode(mode : String) : Int {
+            val scanMode = when (mode){
+                "base" -> GmsDocumentScannerOptions.SCANNER_MODE_BASE
+                "filter" -> GmsDocumentScannerOptions.SCANNER_MODE_BASE_WITH_FILTER
+                "full" -> GmsDocumentScannerOptions.SCANNER_MODE_FULL
+                else -> {
+                    GmsDocumentScannerOptions.SCANNER_MODE_FULL
+                }
+            }
+            return scanMode;
+        }
+        private fun scanner(result:MethodChannel.Result, optionsAndroid : Map<*, *>){
             this.pendingResult = result
 
-
+            GmsDocumentScannerOptions.CAPTURE_MODE_AUTO
             val options = GmsDocumentScannerOptions.Builder()
-                .setGalleryImportAllowed(true)
-                .setPageLimit(1)
+                .setGalleryImportAllowed(optionsAndroid["isGalleryImport"] as Boolean)
+                .setPageLimit(optionsAndroid["pageLimit"] as Int)
                 .setResultFormats(GmsDocumentScannerOptions.RESULT_FORMAT_JPEG)
-                .setScannerMode(GmsDocumentScannerOptions.SCANNER_MODE_FULL)
+                .setScannerMode(makeScanMode(optionsAndroid["scannerMode"] as String))
+
                 .build()
 
             val activity = binding.activity;
@@ -93,7 +105,11 @@ class DocumentScanKit : MethodChannel.MethodCallHandler, PluginRegistry.Activity
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
             if(call.method == "scanner"){
-                scanner(result);
+                val options = call.arguments as? Map<*, *>
+                val optionsAndroid = options!!["androidOptions"] as Map<*, *>
+
+
+                scanner(result, optionsAndroid);
             }else{
                 result.notImplemented()
             }

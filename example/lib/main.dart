@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'package:flutter/services.dart';
 import 'package:doc_scan_kit/doc_scan_kit.dart';
 
@@ -16,7 +15,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final _docScanKitPlugin = DocScanKit();
+  final _docScanKitPlugin = DocScanKit(iosOptions: DocumentScanKitOptionsiOS(
+    compressionQuality: 0.2,
+    modalPresentationStyle: ModalPresentationStyle.overFullScreen
+  ), androidOptions: DocumentScanKitOptionsAndroid(
+    pageLimit: 3,
+    isGalleryImport: false,
+    scannerMode: ScannerModeAndroid.full,
+  ));
 
   @override
   void initState() {
