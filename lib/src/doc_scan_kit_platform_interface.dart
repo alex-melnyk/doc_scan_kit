@@ -1,10 +1,8 @@
-import 'dart:typed_data';
-
 import 'package:doc_scan_kit/src/options/android_options.dart';
 import 'package:doc_scan_kit/src/options/ios_options.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-
 import 'doc_scan_kit_method_channel.dart';
+import 'options/scan_result.dart';
 
 abstract class DocScanKitPlatform extends PlatformInterface {
   /// Constructs a DocScanKitPlatform.
@@ -27,7 +25,7 @@ abstract class DocScanKitPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<List<Uint8List>> scanner(
+  Future<List<ScanResult>> scanner(
       final DocumentScanKitOptionsAndroid androidOptions,
       final DocumentScanKitOptionsiOS iosOptions);
 }

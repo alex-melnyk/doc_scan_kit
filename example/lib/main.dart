@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
@@ -15,23 +17,28 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final _docScanKitPlugin = DocScanKit(iosOptions: DocumentScanKitOptionsiOS(
-    compressionQuality: 0.2,
-    modalPresentationStyle: ModalPresentationStyle.overFullScreen
-  ), androidOptions: DocumentScanKitOptionsAndroid(
-    pageLimit: 3,
-    isGalleryImport: false,
-    scannerMode: ScannerModeAndroid.full,
-  ));
-
+  
   @override
   void initState() {
     super.initState();
   }
-List<Uint8List> imageData = [];
+
+  List<ScanResult> imageData = [];
   Future<void> scan() async {
+    final docScanKitPlugin = DocScanKit(
+        iosOptions: DocumentScanKitOptionsiOS(
+    compressionQuality: 0.2,
+            saveImage: true,
+    modalPresentationStyle: ModalPresentationStyle.overFullScreen
+
+  ), androidOptions: DocumentScanKitOptionsAndroid(
+    pageLimit: 3,
+          isGalleryImport: true,
+    scannerMode: ScannerModeAndroid.full,
+  ));
+
     try {
-      final List<Uint8List> images = await _docScanKitPlugin.scanner();
+      final List<ScanResult> images = await docScanKitPlugin.scanner();
       for (var element in images) {
         imageData.add(element);
       }
@@ -60,7 +67,21 @@ List<Uint8List> imageData = [];
               child: ListView.builder(
                 itemCount: imageData.length,
                 itemBuilder: (context, index) {
-                  return Image.memory(imageData[index]);
+                  return Column(
+                    children: [
+                      const Text('Image Bytes'),
+                      Image.memory(
+                        imageData[index].imagesBytes,
+                        width: 200,
+                      ),
+                      const SizedBox(height: 10),
+                      const Text('Image Path'),
+                      Image.file(
+                        File(imageData[index].imagePath),
+                        width: 200,
+                      ),
+                    ],
+                  );
                 },
               ),
             )

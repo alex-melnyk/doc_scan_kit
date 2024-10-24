@@ -16,8 +16,9 @@ import io.flutter.plugin.common.MethodCall
 class DocumentScanKit : MethodChannel.MethodCallHandler, PluginRegistry.ActivityResultListener   {
 
     private lateinit var  binding : ActivityPluginBinding;
-    private val scanRequestCode =1;
+    private val scanRequestCode = 1;
     private var pendingResult: MethodChannel.Result? = null
+    private var optionsAndroid :  Map<*, *> = emptyMap<Any,Any>()
 
     fun setActivityPluginBinding(binding:ActivityPluginBinding){
         this.binding = binding
@@ -75,13 +76,15 @@ class DocumentScanKit : MethodChannel.MethodCallHandler, PluginRegistry.Activity
             if(result != null){
                 val pages = result.pages
                 if(!pages.isNullOrEmpty()){
-                    val imgArray: ArrayList<ByteArray> = arrayListOf()
+                    val imgArray: ArrayList<HashMap<String,Any>> = arrayListOf()
                     for (page in pages){
                         val inputStream = binding.activity.contentResolver.openInputStream(page.imageUri)
                         if (inputStream != null) {
-                            val bytes = inputStream.readBytes()
-                            imgArray.add(bytes)
+                            val resultHashMap: HashMap<String, Any> = HashMap()
+                            resultHashMap["bytes"] = inputStream.readBytes();
+                            resultHashMap["path"] = page.imageUri.path!!
                             inputStream.close()
+                            imgArray.add(resultHashMap)
                         } else {
                             Log.e("DocumentScannerKit", "Error opening input stream for page ${page.imageUri}")
                         }
@@ -106,7 +109,7 @@ class DocumentScanKit : MethodChannel.MethodCallHandler, PluginRegistry.Activity
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
             if(call.method == "scanner"){
                 val options = call.arguments as? Map<*, *>
-                val optionsAndroid = options!!["androidOptions"] as Map<*, *>
+                this.optionsAndroid = options!!["androidOptions"] as Map<*, *>;
 
 
                 scanner(result, optionsAndroid);

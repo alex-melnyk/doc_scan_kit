@@ -1,5 +1,7 @@
 
-# DocScanKit Plugin
+# DocScanKit Plugin 
+
+# [pub.dev](https://pub.dev/packages/doc_scan_kit)
 
 ## Description
 
@@ -44,7 +46,7 @@ Here's a simple example of how to use the plugin to scan documents:
 import 'package:doc_scan_kit/doc_scan_kit.dart';
 
 try {
-  final List<Uint8List> images = await DocScanKit().scanner();
+  final List<ScanResult> images = await DocScanKit().scanner();
 } on PlatformException catch (e) {
   debugPrint('Failed: $e');
 }

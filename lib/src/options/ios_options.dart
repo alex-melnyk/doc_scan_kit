@@ -1,7 +1,9 @@
+import './scan_result.dart';
 class DocumentScanKitOptionsiOS {
   DocumentScanKitOptionsiOS({
     this.modalPresentationStyle = ModalPresentationStyle.overFullScreen,
     this.compressionQuality = 1.0,
+      this.saveImage = true
   }) : assert(!(compressionQuality > 1.0 || compressionQuality < 0.0),
             'The comprehension value must be between 0 and 1');
 
@@ -13,9 +15,16 @@ class DocumentScanKitOptionsiOS {
   ///default = 1
   final double compressionQuality;
 
+  /// Set to true to enable saving the image
+  /// and returning the image path in [ScanResult.imagePath].
+  /// The default is true.
+  /// In Android imagePath is always returned
+  final bool saveImage;
+
   Map<String, dynamic> toJson() => {
         'modalPresentationStyle': modalPresentationStyle.name,
         'compressionQuality': compressionQuality,
+        'saveImage': saveImage
       };
 }
 

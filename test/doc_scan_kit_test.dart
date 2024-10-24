@@ -10,11 +10,12 @@ class MockDocScanKitPlatform
     implements DocScanKitPlatform {
 
   @override
-  Future<List<Uint8List>> scanner(
+  Future<List<ScanResult>> scanner(
     final DocumentScanKitOptionsAndroid optionsAndroid,
     final DocumentScanKitOptionsiOS optionsIos,
   ) async {
-    final list = await Future.value([Uint8List(0x00)]);
+    final list = await Future.value(
+        [ScanResult(imagePath: '', imagesBytes: Uint8List(0))]);
     return list;
   }  
 }
@@ -32,6 +33,6 @@ void main() {
     DocScanKitPlatform.instance = fakePlatform;
     final result = await docScanKitPlugin.scanner();
     
-    expect(result.first, isA<Uint8List>());
+    expect(result.first, isA<ScanResult>());
   });
 }

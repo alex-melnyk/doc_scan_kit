@@ -13,7 +13,7 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
       channel,
       (MethodCall methodCall) async {
-        return <Uint8List>[];
+        return <ScanResult>[];
       },
     );
   });
@@ -27,6 +27,7 @@ DocumentScanKitOptionsAndroid optionsAndroid =
 
 
   test('scanner', () async {
-    expect((await platform.scanner(optionsAndroid, optionsIos)), <Uint8List>[]);
+    expect(
+        (await platform.scanner(optionsAndroid, optionsIos)), <ScanResult>[]);
   });
 }

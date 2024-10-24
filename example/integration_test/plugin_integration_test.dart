@@ -17,7 +17,7 @@ void main() {
 
   testWidgets('scan test', (WidgetTester tester) async {
     final DocScanKit plugin = DocScanKit();
-    final List<Uint8List> images = await plugin.scanner();
+    final List<ScanResult> images = await plugin.scanner();
     expect(images.isNotEmpty, List<Uint8List>);
   });
 }
