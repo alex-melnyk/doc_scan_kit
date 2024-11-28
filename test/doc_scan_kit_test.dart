@@ -8,7 +8,6 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 class MockDocScanKitPlatform
     with MockPlatformInterfaceMixin
     implements DocScanKitPlatform {
-
   @override
   Future<List<ScanResult>> scanner(
     final DocumentScanKitOptionsAndroid optionsAndroid,
@@ -17,7 +16,7 @@ class MockDocScanKitPlatform
     final list = await Future.value(
         [ScanResult(imagePath: '', imagesBytes: Uint8List(0))]);
     return list;
-  }  
+  }
 }
 
 void main() {
@@ -32,7 +31,7 @@ void main() {
     MockDocScanKitPlatform fakePlatform = MockDocScanKitPlatform();
     DocScanKitPlatform.instance = fakePlatform;
     final result = await docScanKitPlugin.scanner();
-    
+
     expect(result.first, isA<ScanResult>());
   });
 }

@@ -10,7 +10,8 @@ void main() {
   const MethodChannel channel = MethodChannel('doc_scan_kit');
 
   setUp(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
       channel,
       (MethodCall methodCall) async {
         return <ScanResult>[];
@@ -19,12 +20,12 @@ void main() {
   });
 
   tearDown(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(channel, null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, null);
   });
-DocumentScanKitOptionsAndroid optionsAndroid =
+  DocumentScanKitOptionsAndroid optionsAndroid =
       DocumentScanKitOptionsAndroid();
   DocumentScanKitOptionsiOS optionsIos = DocumentScanKitOptionsiOS();
-
 
   test('scanner', () async {
     expect(

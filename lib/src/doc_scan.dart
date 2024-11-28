@@ -1,7 +1,6 @@
 import '../doc_scan_kit.dart';
 import 'doc_scan_kit_platform_interface.dart';
 
-
 class DocScanKit {
   final DocumentScanKitOptionsAndroid? androidOptions;
   final DocumentScanKitOptionsiOS? iosOptions;

@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 class ScanResult {
-  String imagePath;
+  String? imagePath;
   Uint8List imagesBytes;
   ScanResult({
     required this.imagePath,

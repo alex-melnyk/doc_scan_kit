@@ -17,7 +17,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  
   @override
   void initState() {
     super.initState();
@@ -27,15 +26,15 @@ class _MyAppState extends State<MyApp> {
   Future<void> scan() async {
     final docScanKitPlugin = DocScanKit(
         iosOptions: DocumentScanKitOptionsiOS(
-    compressionQuality: 0.2,
+            compressionQuality: 0.2,
             saveImage: true,
-    modalPresentationStyle: ModalPresentationStyle.overFullScreen
-
-  ), androidOptions: DocumentScanKitOptionsAndroid(
-    pageLimit: 3,
+            modalPresentationStyle: ModalPresentationStyle.overFullScreen),
+        androidOptions: DocumentScanKitOptionsAndroid(
+          pageLimit: 3,
+          saveImage: false,
           isGalleryImport: true,
-    scannerMode: ScannerModeAndroid.full,
-  ));
+          scannerMode: ScannerModeAndroid.full,
+        ));
 
     try {
       final List<ScanResult> images = await docScanKitPlugin.scanner();
@@ -76,18 +75,18 @@ class _MyAppState extends State<MyApp> {
                       ),
                       const SizedBox(height: 10),
                       const Text('Image Path'),
-                      Image.file(
-                        File(imageData[index].imagePath),
-                        width: 200,
-                      ),
+                      if (imageData[index].imagePath != null)
+                        Image.file(
+                          File(imageData[index].imagePath!),
+                          width: 200,
+                        ),
                     ],
                   );
                 },
               ),
             )
           ],
-        )
-        ),
+        )),
       ),
     );
   }

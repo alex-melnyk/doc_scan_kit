@@ -24,11 +24,9 @@ class MethodChannelDocScanKit extends DocScanKitPlatform {
             ?.map(
           (e) {
             e as Map;
-            return ScanResult(
-                imagePath: e['path'] ?? '', imagesBytes: e['bytes']);
+            return ScanResult(imagePath: e['path'], imagesBytes: e['bytes']);
           },
         ).toList() ??
         [];
-   
   }
 }

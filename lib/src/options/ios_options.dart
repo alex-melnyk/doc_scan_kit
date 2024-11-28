@@ -1,10 +1,11 @@
 import './scan_result.dart';
+
 class DocumentScanKitOptionsiOS {
-  DocumentScanKitOptionsiOS({
-    this.modalPresentationStyle = ModalPresentationStyle.overFullScreen,
-    this.compressionQuality = 1.0,
-      this.saveImage = true
-  }) : assert(!(compressionQuality > 1.0 || compressionQuality < 0.0),
+  DocumentScanKitOptionsiOS(
+      {this.modalPresentationStyle = ModalPresentationStyle.overFullScreen,
+      this.compressionQuality = 1.0,
+      this.saveImage = true})
+      : assert(!(compressionQuality > 1.0 || compressionQuality < 0.0),
             'The comprehension value must be between 0 and 1');
 
   ///Modal presentation styles available when presenting view controllers

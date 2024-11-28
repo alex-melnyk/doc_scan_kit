@@ -1,12 +1,11 @@
 import './../options/scan_result.dart';
 
 class DocumentScanKitOptionsAndroid {
-  DocumentScanKitOptionsAndroid({
-      this.pageLimit = 1,
+  DocumentScanKitOptionsAndroid(
+      {this.pageLimit = 1,
       this.scannerMode = ScannerModeAndroid.full,
       this.isGalleryImport = true,
-      this.saveImage = true
-  });
+      this.saveImage = true});
 
   /// Sets a page limit for the maximum number of pages that can be scanned in a single scanning session. default = 1.
   final int pageLimit;

@@ -10,3 +10,6 @@
 
 * Added ScanResult
 * Added option saveImage, to return imagePath from ScanResult
+
+## 0.0.5
+* implementing saveImage = false for android

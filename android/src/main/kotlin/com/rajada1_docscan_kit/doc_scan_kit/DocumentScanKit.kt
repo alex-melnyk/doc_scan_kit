@@ -1,5 +1,6 @@
 package com.rajada1_docscan_kit.doc_scan_kit
 import android.app.Activity
+import android.content.ContentResolver
 import android.content.Intent
 import android.content.IntentSender
 import android.util.Log
@@ -11,6 +12,7 @@ import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
 import io.flutter.plugin.common.MethodCall
+import java.io.File
 
 
 class DocumentScanKit : MethodChannel.MethodCallHandler, PluginRegistry.ActivityResultListener   {
@@ -82,7 +84,12 @@ class DocumentScanKit : MethodChannel.MethodCallHandler, PluginRegistry.Activity
                         if (inputStream != null) {
                             val resultHashMap: HashMap<String, Any> = HashMap()
                             resultHashMap["bytes"] = inputStream.readBytes();
-                            resultHashMap["path"] = page.imageUri.path!!
+                            if(!(optionsAndroid["saveImage"] as Boolean)){
+                                val  file: File =  File(page.imageUri.path!!);
+                                file.delete();
+                            }else{
+                                resultHashMap["path"] = page.imageUri.path!!
+                            }
                             inputStream.close()
                             imgArray.add(resultHashMap)
                         } else {
