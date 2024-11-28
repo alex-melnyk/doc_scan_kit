@@ -13,3 +13,6 @@
 
 ## 0.0.5
 * implementing saveImage = false for android
+
+## 0.0.6
+* add support  swift package manager

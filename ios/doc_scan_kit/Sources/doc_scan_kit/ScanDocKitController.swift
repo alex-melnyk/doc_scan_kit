@@ -56,6 +56,8 @@ class ScanDocKitController:UIViewController, VNDocumentCameraViewControllerDeleg
                 if saveImage {
                     let path = saveImg(image: imageData)
                     dict["path"] = path
+                }else{
+                    dict["path"] = nil
                 }
                 resultArray.append(dict)
             }
