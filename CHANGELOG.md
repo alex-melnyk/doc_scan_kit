@@ -16,3 +16,10 @@
 
 ## 0.0.6
 * add support  swift package manager
+
+## 0.0.7
+* Added options `useQrCodeScanner` and `useTextRecognizer` to `DocumentScanKitOptionsiOS`
+* Updated `ScanResult` to include `text` and `barcode` fields
+* Implemented QR code and text recognition in `ScanDocKitController`
+* Updated method channel implementation to handle new options and fields
+* Added new Swift files `RecognizedTextDataSource.swift` and `TextRecognize.swift` for text recognition functionality

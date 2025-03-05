@@ -4,7 +4,9 @@ class DocumentScanKitOptionsiOS {
   DocumentScanKitOptionsiOS(
       {this.modalPresentationStyle = ModalPresentationStyle.overFullScreen,
       this.compressionQuality = 1.0,
-      this.saveImage = true})
+      this.saveImage = true,
+      this.useQrCodeScanner = false,
+      this.useTextRecognizer = false})
       : assert(!(compressionQuality > 1.0 || compressionQuality < 0.0),
             'The comprehension value must be between 0 and 1');
 
@@ -22,10 +24,24 @@ class DocumentScanKitOptionsiOS {
   /// In Android imagePath is always returned
   final bool saveImage;
 
+  /// Set to true to enable saving the image
+  /// and returning the image path in [ScanResult.barcode].
+  ///
+  /// The default is true.
+  final bool useQrCodeScanner;
+
+  /// Set to true to enable saving the image
+  /// and returning the image path in [ScanResult.text].
+  ///
+  /// The default is true.
+  final bool useTextRecognizer;
+
   Map<String, dynamic> toJson() => {
         'modalPresentationStyle': modalPresentationStyle.name,
         'compressionQuality': compressionQuality,
-        'saveImage': saveImage
+        'saveImage': saveImage,
+        'useQrCodeScanner': useQrCodeScanner,
+        'useTextRecognizer': useTextRecognizer,
       };
 }
 

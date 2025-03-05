@@ -44,8 +44,10 @@ public class DocScanKitPlugin: NSObject, FlutterPlugin {
         let presentationStyle = mapPresentationStyle(from: presentationStyleString)
         let compressionQuality = iosOptions["compressionQuality"] as? CGFloat ?? 1.0
         let saveImage = iosOptions["saveImage"] as? Bool ?? true
+        let useQrCodeScanner = iosOptions["useQrCodeScanner"] as? Bool ?? false
+        let useTextRecognizer = iosOptions["useTextRecognizer"] as? Bool ?? false
         if let viewController = UIApplication.shared.delegate?.window??.rootViewController as? FlutterViewController {
-            let scanController = ScanDocKitController(result: result, compressionQuality: compressionQuality, saveImage:saveImage)
+            let scanController = ScanDocKitController(result: result, compressionQuality: compressionQuality, saveImage:saveImage, useTextRecognizer:  useTextRecognizer, useQrCodeScanner: useQrCodeScanner)
             scanController.isModalInPresentation = true
             scanController.modalPresentationStyle = presentationStyle
             viewController.present(scanController, animated: true)

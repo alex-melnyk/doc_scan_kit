@@ -13,8 +13,10 @@ class MockDocScanKitPlatform
     final DocumentScanKitOptionsAndroid optionsAndroid,
     final DocumentScanKitOptionsiOS optionsIos,
   ) async {
-    final list = await Future.value(
-        [ScanResult(imagePath: '', imagesBytes: Uint8List(0))]);
+    final list = await Future.value([
+      ScanResult(
+          imagePath: '', imagesBytes: Uint8List(0), text: '', barcode: '')
+    ]);
     return list;
   }
 }
