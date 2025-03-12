@@ -9,6 +9,29 @@ A Flutter plugin that performs document scanning, using ML Kit on Android and Vi
 
 ---
 
+# Demo
+### iOS
+<p align="center">
+	<img src="https://github.com/rajada1/doc_scan_kit/blob/master/demo/ios/video.gif?raw=true" width="200"  />
+</p>
+
+## Screenshots
+| ![Screenshot 1](https://github.com/rajada1/doc_scan_kit/blob/master/demo/ios/scan.jpeg?raw=true) | ![Screenshot 2](https://github.com/rajada1/doc_scan_kit/blob/master/demo/ios/preview.jpeg?raw=true) | ![Screenshot 3](https://github.com/rajada1/doc_scan_kit/blob/master/demo/ios/filter.jpeg?raw=true) |
+|----------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
+| 
+
+### Android
+<p align="center">
+	<img src="https://github.com/rajada1/doc_scan_kit/blob/master/demo/android/video.gif?raw=true" width="200"  />
+</p>
+
+## Screenshots
+| ![Screenshot 1](https://github.com/rajada1/doc_scan_kit/blob/master/demo/android/scan.jpeg?raw=true) | ![Screenshot 2](https://github.com/rajada1/doc_scan_kit/blob/master/demo/android/preview.jpeg?raw=true) | ![Screenshot 3](https://github.com/rajada1/doc_scan_kit/blob/master/demo/android/filter.jpeg?raw=true) |
+|----------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
+| 
+
+
+
 ## Initial Setup
 
 ### Android
@@ -45,11 +68,13 @@ Here's a simple example of how to use the plugin to scan documents:
 ```dart
 import 'package:doc_scan_kit/doc_scan_kit.dart';
 
-try {
-  final List<ScanResult> images = await DocScanKit().scanner();
-} on PlatformException catch (e) {
-  debugPrint('Failed: $e');
-}
+  try {
+      final List<ScanResult> images = await docScanKitPlugin.scanner();
+    } on PlatformException catch (e) {
+      debugPrint('Failed $e');
+    } finally {
+      docScanKitPlugin.close();
+    }
 ```
 
 This example performs the scan and returns a list of images in `Uint8List` format.
