@@ -29,21 +29,26 @@ class _MyAppState extends State<MyApp> {
           modalPresentationStyle: ModalPresentationStyle.overFullScreen),
       androidOptions: DocumentScanKitOptionsAndroid(
         pageLimit: 3,
-        saveImage: false,
+        saveImage: true,
         isGalleryImport: true,
         scannerMode: ScannerModeAndroid.full,
       ));
 
   List<ScanResult> imageData = [];
+  bool isLoading = false;
   Future<void> scan() async {
     try {
+      isLoading = true;
+      setState(() {});
       final List<ScanResult> images = await docScanKitPlugin.scanner();
       for (var element in images) {
         imageData.add(element);
       }
-      setState(() {});
     } on PlatformException catch (e) {
       debugPrint('Failed $e');
+    } finally {
+      isLoading = false;
+      setState(() {});
     }
   }
 
@@ -60,27 +65,28 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('DocScanKit example app'),
         ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: scan,
+          icon: const Icon(Icons.camera_alt),
+          label: const Text('Scan'),
+        ),
         body: Center(
             child: Column(
           children: [
-            ElevatedButton(
-                onPressed: () {
-                  scan();
-                },
-                child: const Text('Scan')),
+            if (isLoading) const CircularProgressIndicator(),
             Expanded(
               child: ListView.builder(
                 itemCount: imageData.length,
                 itemBuilder: (context, index) {
                   return Column(
                     children: [
-                      const Text('Image Bytes'),
+                      const Text('Image By Bytes'),
                       Image.memory(
                         imageData[index].imagesBytes,
                         width: 200,
                       ),
                       const SizedBox(height: 10),
-                      const Text('Image Path'),
+                      const Text('Image ByPath'),
                       if (imageData[index].imagePath != null)
                         Image.file(
                           File(imageData[index].imagePath!),
