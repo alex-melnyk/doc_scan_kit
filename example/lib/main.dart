@@ -22,20 +22,20 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
+  final docScanKitPlugin = DocScanKit(
+      iosOptions: DocumentScanKitOptionsiOS(
+          compressionQuality: 0.2,
+          saveImage: true,
+          modalPresentationStyle: ModalPresentationStyle.overFullScreen),
+      androidOptions: DocumentScanKitOptionsAndroid(
+        pageLimit: 3,
+        saveImage: false,
+        isGalleryImport: true,
+        scannerMode: ScannerModeAndroid.full,
+      ));
+
   List<ScanResult> imageData = [];
   Future<void> scan() async {
-    final docScanKitPlugin = DocScanKit(
-        iosOptions: DocumentScanKitOptionsiOS(
-            compressionQuality: 0.2,
-            saveImage: true,
-            modalPresentationStyle: ModalPresentationStyle.overFullScreen),
-        androidOptions: DocumentScanKitOptionsAndroid(
-          pageLimit: 3,
-          saveImage: false,
-          isGalleryImport: true,
-          scannerMode: ScannerModeAndroid.full,
-        ));
-
     try {
       final List<ScanResult> images = await docScanKitPlugin.scanner();
       for (var element in images) {
@@ -45,6 +45,12 @@ class _MyAppState extends State<MyApp> {
     } on PlatformException catch (e) {
       debugPrint('Failed $e');
     }
+  }
+
+  @override
+  void dispose() {
+    docScanKitPlugin.close();
+    super.dispose();
   }
 
   @override

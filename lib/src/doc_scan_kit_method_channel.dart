@@ -11,14 +11,17 @@ class MethodChannelDocScanKit extends DocScanKitPlatform {
   @visibleForTesting
   final methodChannel = const MethodChannel('doc_scan_kit');
 
+  /// Instance id.
+  final id = DateTime.now().microsecondsSinceEpoch.toString();
   @override
   Future<List<ScanResult>> scanner(
     final DocumentScanKitOptionsAndroid androidOptions,
     final DocumentScanKitOptionsiOS iosOptions,
   ) async {
     return (await methodChannel.invokeMethod<List<Object?>>(
-                'scanner', <String, dynamic>{
+                'scanKit#startDocumentScanner', <String, dynamic>{
           'androidOptions': androidOptions.toJson(),
+          'id': id,
           'iosOptions': iosOptions.toJson()
         }))
             ?.map(
@@ -32,5 +35,13 @@ class MethodChannelDocScanKit extends DocScanKitPlatform {
           },
         ).toList() ??
         [];
+  }
+
+  @override
+
+  /// Close the detector and release resources.
+  Future<void> close() {
+    return methodChannel
+        .invokeMethod<void>("scanKit#closeDocumentScanner", {'id': id});
   }
 }

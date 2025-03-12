@@ -19,6 +19,12 @@ class MockDocScanKitPlatform
     ]);
     return list;
   }
+
+  @override
+  Future<void> close() {
+    // TODO: implement close
+    throw UnimplementedError();
+  }
 }
 
 void main() {

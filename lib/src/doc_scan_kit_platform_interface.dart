@@ -28,4 +28,6 @@ abstract class DocScanKitPlatform extends PlatformInterface {
   Future<List<ScanResult>> scanner(
       final DocumentScanKitOptionsAndroid androidOptions,
       final DocumentScanKitOptionsiOS iosOptions);
+
+  Future<void> close();
 }

@@ -14,4 +14,6 @@ class DocScanKit {
         androidOptions ?? DocumentScanKitOptionsAndroid(),
         iosOptions ?? DocumentScanKitOptionsiOS());
   }
+
+  Future<void> close() => DocScanKitPlatform.instance.close();
 }
