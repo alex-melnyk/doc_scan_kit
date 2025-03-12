@@ -21,12 +21,12 @@ class MockDocScanKitPlatform
   }
 
   @override
-  Future<void> close() {
-    // TODO: implement close
-    throw UnimplementedError();
+  Future<void> close() async {
+    docScanKitPlugin.close();
   }
 }
 
+DocScanKit docScanKitPlugin = DocScanKit();
 void main() {
   final DocScanKitPlatform initialPlatform = DocScanKitPlatform.instance;
 
@@ -35,7 +35,6 @@ void main() {
   });
 
   test('scanner', () async {
-    DocScanKit docScanKitPlugin = DocScanKit();
     MockDocScanKitPlatform fakePlatform = MockDocScanKitPlatform();
     DocScanKitPlatform.instance = fakePlatform;
     final result = await docScanKitPlugin.scanner();
