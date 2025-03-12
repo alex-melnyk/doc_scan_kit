@@ -28,7 +28,7 @@ public class DocScanKitPlugin: NSObject, FlutterPlugin {
   }
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     switch call.method {
-    case "scanner":
+    case "scanKit#startDocumentScanner":
       guard Bundle.main.object(forInfoDictionaryKey: "NSCameraUsageDescription") != nil else {
         return result(FlutterError(code: "configuration_error",
                                    message: "the NSCameraUsageDescription parameter needs to be configured in the Info.plist",
