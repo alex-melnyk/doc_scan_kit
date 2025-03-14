@@ -162,8 +162,8 @@ public class DocumentScanner implements MethodChannel.MethodCallHandler, PluginR
         //Check if the result has a list of pages
         List<GmsDocumentScanningResult.Page> pages = result.getPages();
         if(pages != null && !pages.isEmpty()){
-            Map<String, Object> imageData = new HashMap<>();
             for (GmsDocumentScanningResult.Page page : pages){
+                Map<String, Object> imageData = new HashMap<>();
              Uri imageUri = page.getImageUri();
                 Context context = binding.getActivity().getApplicationContext();
                 byte[]  imageBytes = getBytesFromUri(context, imageUri);
