@@ -32,3 +32,7 @@
 * Refactored `DocScanKit` implementation to improve resource management; added `close` method and updated `main.dart` for better plugin usage
 * Implemented `DocumentScanner` and `DocScanKitPlugin` for Android; added method channel for document scanning functionality in Java, and committed the base code in Kotlin
 * Updated Gradle wrapper to version `8.1.1` and Android plugin to version `8.1.0`
+
+
+## 0.0.8
+* Fix: return duplicate document on android.
