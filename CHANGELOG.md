@@ -34,5 +34,5 @@
 * Updated Gradle wrapper to version `8.1.1` and Android plugin to version `8.1.0`
 
 
-## 0.0.8
+## 0.0.9
 * Fix: return duplicate document on android.
