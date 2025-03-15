@@ -29,7 +29,7 @@ android {
         namespace = "com.rajada1_docscan_kit.doc_scan_kit"
     }
 
-    compileSdk = 34
+    compileSdk = 35
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
