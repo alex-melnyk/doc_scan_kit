@@ -36,3 +36,7 @@
 
 ## 0.0.9
 * Fix: return duplicate document on android.
+
+## 0.0.10
+* Refactor DocumentScanner Android options handling for improved type safety
+* Add Gradle wrapper properties for version 8.5
