@@ -124,8 +124,9 @@ public class DocumentScanner implements MethodChannel.MethodCallHandler, PluginR
 
 
     private GmsDocumentScannerOptions makeOptions(Map<String, Object> options){
-        boolean isGalleryImport = (boolean) options.get("isGalleryImport");
-        int pageLimit = (int) options.get("pageLimit");
+        boolean isGalleryImport = Boolean.TRUE.equals(options.get("isGalleryImport"));
+        Object npage = options.get("pageLimit");
+        int pageLimit = (npage instanceof  Number) ? ((Number) npage).intValue() : 1;
         int scannerMode;
         switch ((String) Objects.requireNonNull(options.get("scannerMode"))){
             case "base":
@@ -168,7 +169,8 @@ public class DocumentScanner implements MethodChannel.MethodCallHandler, PluginR
                 Context context = binding.getActivity().getApplicationContext();
                 byte[]  imageBytes = getBytesFromUri(context, imageUri);
                 imageData.put("bytes", imageBytes);
-                if(!(boolean) extractedOptions.get("saveImage") ){
+                boolean saveImage = Boolean.TRUE.equals(extractedOptions.get("saveImage"));
+                if(!saveImage ){
 
                     File file = new File(Objects.requireNonNull(imageUri.getPath()));
                     file.deleteOnExit();
