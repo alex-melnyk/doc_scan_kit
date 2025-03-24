@@ -41,6 +41,6 @@
 * Refactor DocumentScanner Android options handling for improved type safety
 * Add Gradle wrapper properties for version 8.5
 
-## 0.0.10
+## 0.0.11
 * Refactor DocumentScanner options handling for improved clarity and default values
 * Update Gradle wrapper to version 8.10.2 for improved performance and features
