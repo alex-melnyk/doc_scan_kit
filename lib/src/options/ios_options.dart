@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import './scan_result.dart';
 
 class DocumentScanKitOptionsiOS {
@@ -6,7 +8,8 @@ class DocumentScanKitOptionsiOS {
       this.compressionQuality = 1.0,
       this.saveImage = true,
       this.useQrCodeScanner = false,
-      this.useTextRecognizer = false})
+      this.useTextRecognizer = false,
+      this.color})
       : assert(!(compressionQuality > 1.0 || compressionQuality < 0.0),
             'The comprehension value must be between 0 and 1');
 
@@ -36,12 +39,18 @@ class DocumentScanKitOptionsiOS {
   /// The default is true.
   final bool useTextRecognizer;
 
+  /// Defines the color applied to buttons and the document detection overlay.
+  ///
+  /// **Note:** Setting `alpha = 0` makes the buttons fully transparent.
+  final Color? color;
+
   Map<String, dynamic> toJson() => {
         'modalPresentationStyle': modalPresentationStyle.name,
         'compressionQuality': compressionQuality,
         'saveImage': saveImage,
         'useQrCodeScanner': useQrCodeScanner,
         'useTextRecognizer': useTextRecognizer,
+        'color': color != null ? [color?.r, color?.g, color?.b, color?.a] : [],
       };
 }
 

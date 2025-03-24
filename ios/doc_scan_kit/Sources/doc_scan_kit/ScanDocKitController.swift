@@ -11,14 +11,17 @@ class ScanDocKitController: UIViewController, VNDocumentCameraViewControllerDele
     let saveImage: Bool
     let useQrCodeScanner: Bool
     let useTextRecognizer: Bool
+    let colorList : [NSNumber]
     var activityIndicator: UIActivityIndicatorView!
     
-    init(result: @escaping FlutterResult, compressionQuality: CGFloat, saveImage: Bool, useTextRecognizer: Bool,useQrCodeScanner:Bool ) {
+    
+    init(result: @escaping FlutterResult, compressionQuality: CGFloat, saveImage: Bool, useTextRecognizer: Bool,useQrCodeScanner:Bool, colorList:[NSNumber] ) {
         self.result = result
         self.compressionQuality = compressionQuality
         self.saveImage = saveImage
         self.useQrCodeScanner = useQrCodeScanner
         self.useTextRecognizer = useTextRecognizer
+        self.colorList = colorList
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -38,9 +41,16 @@ class ScanDocKitController: UIViewController, VNDocumentCameraViewControllerDele
         if self.isBeingPresented {
             let documentCameraVC = VNDocumentCameraViewController()
             documentCameraVC.delegate = self
+            
+            //Apply tint color
+            applyTintColor(controller: documentCameraVC)
+            
+            
             present(documentCameraVC, animated: true)
         }
     }
+    
+    
     
     func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
         result(nil)
@@ -188,6 +198,17 @@ class ScanDocKitController: UIViewController, VNDocumentCameraViewControllerDele
         } catch {
             print(error.localizedDescription)
             return nil
+        }
+    }
+    
+    func applyTintColor(controller:VNDocumentCameraViewController){
+        if colorList.count >= 4 {
+            let red = CGFloat(truncating: colorList[0])
+            let green = CGFloat(truncating: colorList[1])
+            let blue = CGFloat(truncating: colorList[2])
+            let alpha = CGFloat(truncating: colorList[3])
+
+            controller.view.tintColor = UIColor(red: red, green: green, blue: blue, alpha: alpha)
         }
     }
 }

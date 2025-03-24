@@ -26,6 +26,7 @@ class _MyAppState extends State<MyApp> {
       iosOptions: DocumentScanKitOptionsiOS(
           compressionQuality: 0.2,
           saveImage: true,
+          color: Colors.orange,
           modalPresentationStyle: ModalPresentationStyle.overFullScreen),
       androidOptions: DocumentScanKitOptionsAndroid(
         pageLimit: 3,
