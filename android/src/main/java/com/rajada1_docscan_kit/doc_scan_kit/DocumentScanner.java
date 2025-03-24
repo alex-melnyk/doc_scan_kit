@@ -125,19 +125,19 @@ public class DocumentScanner implements MethodChannel.MethodCallHandler, PluginR
 
     private GmsDocumentScannerOptions makeOptions(Map<String, Object> options){
         boolean isGalleryImport = Boolean.TRUE.equals(options.get("isGalleryImport"));
-        Object npage = options.get("pageLimit");
-        int pageLimit = (npage instanceof  Number) ? ((Number) npage).intValue() : 1;
-        int scannerMode;
-        switch ((String) Objects.requireNonNull(options.get("scannerMode"))){
+        Object pageLimitObject = options.get("pageLimit");
+        Object scannerModeObject = options.get("scannerMode");
+        int pageLimit = (pageLimitObject instanceof  Number) ? ((Number) pageLimitObject).intValue() : 1;
+        String scannerModeValue = (scannerModeObject instanceof  String) ? ((String) scannerModeObject) : "full";
+        int scannerMode = GmsDocumentScannerOptions.SCANNER_MODE_FULL;
+        switch (scannerModeValue){
             case "base":
                 scannerMode = GmsDocumentScannerOptions.SCANNER_MODE_BASE;
                 break;
             case "filter":
                 scannerMode = GmsDocumentScannerOptions.SCANNER_MODE_BASE_WITH_FILTER;
                 break;
-            default:
             case "full":
-                scannerMode = GmsDocumentScannerOptions.SCANNER_MODE_FULL;
                 break;
 
         }
