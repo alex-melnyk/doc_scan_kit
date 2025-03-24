@@ -44,3 +44,6 @@
 ## 0.0.11
 * Refactor DocumentScanner options handling for improved clarity and default values
 * Update Gradle wrapper to version 8.10.2 for improved performance and features
+
+## 0.0.12
+* Add color customization for iOS document scanning options
