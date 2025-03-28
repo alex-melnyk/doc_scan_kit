@@ -9,6 +9,30 @@ A Flutter plugin that performs document scanning, using ML Kit on Android and Vi
 
 ---
 
+## Feature Support
+
+| Feature              | Android | iOS  |
+|----------------------|---------|------|
+| Document Scanning   | ✅       | ✅    |
+| Auto Crop           | ✅       | ✅    |
+| Filters             | ✅       | ✅    |
+| Edge Detection      | ✅       | ✅    |
+| Multi-page Scanning | ✅       | ✅    |
+| Text Recognizer     | ✅       | ✅    |
+| QrCode Recognizer   | ❌       | ✅    |
+
+---
+
+## 🚧 Pending Improvements
+
+⚠️ **Areas that need improvement:**
+
+- Improve error handling and return values.
+- Improve viewing when scanning text android.
+
+---
+
+
 # Demo
 ### iOS
 <p align="center">
