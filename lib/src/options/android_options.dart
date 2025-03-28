@@ -5,7 +5,8 @@ class DocumentScanKitOptionsAndroid {
       {this.pageLimit = 1,
       this.scannerMode = ScannerModeAndroid.full,
       this.isGalleryImport = true,
-      this.saveImage = true});
+      this.saveImage = true,
+      this.recognizerText = false});
 
   /// Sets a page limit for the maximum number of pages that can be scanned in a single scanning session. default = 1.
   final int pageLimit;
@@ -21,11 +22,17 @@ class DocumentScanKitOptionsAndroid {
   /// Default is true
   final bool saveImage;
 
+  /// Enable scan text and return text in [ScanResult.text]
+  /// if you set false, the return null,
+  /// Default is false
+  final bool recognizerText;
+
   Map<String, dynamic> toJson() => {
         'pageLimit': pageLimit,
         'scannerMode': scannerMode.name,
         'isGalleryImport': isGalleryImport,
-        'saveImage': saveImage
+        'saveImage': saveImage,
+        'recognizerText': recognizerText
       };
 }
 
