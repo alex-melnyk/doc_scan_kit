@@ -38,12 +38,17 @@
 * Fix: return duplicate document on android.
 
 ## 0.0.10
-* Refactor DocumentScanner Android options handling for improved type safety
-* Add Gradle wrapper properties for version 8.5
+* Refactor DocumentScanner Android options handling for improved type safety.
+* Add Gradle wrapper properties for version 8.5.
 
 ## 0.0.11
-* Refactor DocumentScanner options handling for improved clarity and default values
-* Update Gradle wrapper to version 8.10.2 for improved performance and features
+* Refactor DocumentScanner options handling for improved clarity and default values.
+* Update Gradle wrapper to version 8.10.2 for improved performance and features.
 
 ## 0.0.12
-* Add color customization for iOS document scanning options
+* Add color customization for iOS document scanning options.
+
+## 0.0.13
+* Update Android build dependencies to Gradle AGP 8.7.0 and add ML Kit text recognition.
+* Add ML Kit text recognition support for Android and refactor DocumentScanner.
+* Refactor document scanning options to android.
