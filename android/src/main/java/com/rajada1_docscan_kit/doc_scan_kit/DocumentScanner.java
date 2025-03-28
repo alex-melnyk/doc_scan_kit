@@ -8,6 +8,7 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import io.flutter.Log;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -15,6 +16,7 @@ import io.flutter.plugin.common.PluginRegistry;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanner;
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanning;
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions;
@@ -40,6 +42,7 @@ public class DocumentScanner implements MethodChannel.MethodCallHandler, PluginR
     private MethodChannel.Result pendingResult = null;
     private Map<String, Object> extractedOptions;
     final private int START_DOCUMENT_ACTIVITY = 0x362738;
+    private final TextRecognizer textRecognizer = new TextRecognizer();
 
     public DocumentScanner(ActivityPluginBinding binding){
         this.binding = binding;
@@ -153,14 +156,15 @@ public class DocumentScanner implements MethodChannel.MethodCallHandler, PluginR
     private void closeScanner(MethodCall call ){
         String id = call.argument("id");
         GmsDocumentScanner scanner = instance.get(id);
-        if(scanner == null) return ;
-        instance.remove(id);
+        if(scanner == null) {
+            instance.remove(id);
+            textRecognizer.closedTextRecognizer();
+        }
+
     }
 
-    private void handleScannerResult(GmsDocumentScanningResult result){
+    private void handleScannerResult(GmsDocumentScanningResult result) {
         List<Map<String, Object>> resultMap = new ArrayList<>();
-
-        //Check if the result has a list of pages
         List<GmsDocumentScanningResult.Page> pages = result.getPages();
         if(pages != null && !pages.isEmpty()){
             for (GmsDocumentScanningResult.Page page : pages){
@@ -170,8 +174,16 @@ public class DocumentScanner implements MethodChannel.MethodCallHandler, PluginR
                 byte[]  imageBytes = getBytesFromUri(context, imageUri);
                 imageData.put("bytes", imageBytes);
                 boolean saveImage = Boolean.TRUE.equals(extractedOptions.get("saveImage"));
-                if(!saveImage ){
-
+                boolean recognizerText = Boolean.TRUE.equals(extractedOptions.get("recognizerText"));
+                if(recognizerText){
+                    try {
+                       String text = textRecognizer.handleDetection2(InputImage.fromFilePath(context, imageUri));
+                        imageData.put("text", text);
+                    } catch (IOException e) {
+                        Log.d(e.toString(), "Recognizer Text Error");
+                    }
+                }
+                if(!saveImage){
                     File file = new File(Objects.requireNonNull(imageUri.getPath()));
                     file.deleteOnExit();
                 }else{
@@ -200,7 +212,7 @@ public class DocumentScanner implements MethodChannel.MethodCallHandler, PluginR
             return outputStream.toByteArray();
         } catch (IOException e) {
 
-            e.printStackTrace();
+            Log.d("error GetImg Bytes", e.toString());
             return null;
         }
     }
