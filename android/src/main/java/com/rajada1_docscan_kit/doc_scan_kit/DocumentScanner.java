@@ -38,9 +38,10 @@ public class DocumentScanner implements MethodChannel.MethodCallHandler, PluginR
     private static final String CLOSE = "scanKit#closeDocumentScanner";
     private static final String TAG = "DocumentScanner";
     private final Map<String, GmsDocumentScanner> instance = new HashMap<>();
+    private  Map<String, Object> extractedOptions;
     private final ActivityPluginBinding binding;
     private MethodChannel.Result pendingResult = null;
-    private Map<String, Object> extractedOptions;
+
     final private int START_DOCUMENT_ACTIVITY = 0x362738;
     private final TextRecognizer textRecognizer = new TextRecognizer();
 
@@ -57,7 +58,6 @@ public class DocumentScanner implements MethodChannel.MethodCallHandler, PluginR
 
         switch (method){
             case START:
-                extractedOptions = call.argument("androidOptions");
                 startScanner(call, result);
                 break;
             case CLOSE:
@@ -91,6 +91,7 @@ public class DocumentScanner implements MethodChannel.MethodCallHandler, PluginR
 
     private void startScanner(MethodCall call, final MethodChannel.Result result){
         String id = call.argument("id");
+        extractedOptions = call.argument("androidOptions");
         GmsDocumentScanner scanner = instance.get(id);
         pendingResult = result;
 
@@ -173,8 +174,14 @@ public class DocumentScanner implements MethodChannel.MethodCallHandler, PluginR
                 Context context = binding.getActivity().getApplicationContext();
                 byte[]  imageBytes = getBytesFromUri(context, imageUri);
                 imageData.put("bytes", imageBytes);
-                boolean saveImage = Boolean.TRUE.equals(extractedOptions.get("saveImage"));
-                boolean recognizerText = Boolean.TRUE.equals(extractedOptions.get("recognizerText"));
+                
+                boolean saveImage = true;
+                boolean recognizerText = false;
+            
+                if (extractedOptions != null) {
+                    saveImage = Boolean.TRUE.equals(extractedOptions.get("saveImage"));
+                    recognizerText = Boolean.TRUE.equals(extractedOptions.get("recognizerText"));
+                }
                 if(recognizerText){
                     try {
                        String text = textRecognizer.handleDetection2(InputImage.fromFilePath(context, imageUri));
