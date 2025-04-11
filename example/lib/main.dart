@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -87,7 +88,8 @@ class _MyAppState extends State<MyApp> {
         );
 
         // Se o reconhecimento de texto foi habilitado, processamos o texto
-        if (recognizerTextAndroid || useTextRecognizer) {
+        if ((recognizerTextAndroid && Platform.isAndroid) ||
+            (useTextRecognizer && Platform.isIOS)) {
           try {
             customResult.text = await instance.recognizeText(image.imagesBytes);
           } catch (e) {
@@ -384,6 +386,12 @@ class _MyAppState extends State<MyApp> {
                     value: recognizerTextAndroid,
                     onChanged: (value) =>
                         setState(() => recognizerTextAndroid = value),
+                  ),
+                  SwitchListTile(
+                    title: const Text('Use QR Code Scanner'),
+                    value: useQrCodeScanner,
+                    onChanged: (value) =>
+                        setState(() => useQrCodeScanner = value),
                   ),
                   SwitchListTile(
                     title: const Text('Save Image'),

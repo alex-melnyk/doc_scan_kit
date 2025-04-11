@@ -2,5 +2,5 @@
   package="com.rajada1_docscan_kit.doc_scan_kit">
   <meta-data
           android:name="com.google.mlkit.vision.DEPENDENCIES"
-          android:value="ocr"/>
+          android:value="ocr,barcode"/>
 </manifest>
