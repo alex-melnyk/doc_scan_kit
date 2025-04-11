@@ -7,8 +7,6 @@ class DocumentScanKitOptionsiOS {
       {this.modalPresentationStyle = ModalPresentationStyle.overFullScreen,
       this.compressionQuality = 1.0,
       this.saveImage = true,
-      this.useQrCodeScanner = false,
-      this.useTextRecognizer = false,
       this.color})
       : assert(!(compressionQuality > 1.0 || compressionQuality < 0.0),
             'The comprehension value must be between 0 and 1');
@@ -27,18 +25,6 @@ class DocumentScanKitOptionsiOS {
   /// In Android imagePath is always returned
   final bool saveImage;
 
-  /// Set to true to enable saving the image
-  /// and returning the image path in [ScanResult.barcode].
-  ///
-  /// The default is true.
-  final bool useQrCodeScanner;
-
-  /// Set to true to enable saving the image
-  /// and returning the image path in [ScanResult.text].
-  ///
-  /// The default is true.
-  final bool useTextRecognizer;
-
   /// Defines the color applied to buttons and the document detection overlay.
   ///
   /// **Note:** Setting `alpha = 0` makes the buttons fully transparent.
@@ -48,8 +34,6 @@ class DocumentScanKitOptionsiOS {
         'modalPresentationStyle': modalPresentationStyle.name,
         'compressionQuality': compressionQuality,
         'saveImage': saveImage,
-        'useQrCodeScanner': useQrCodeScanner,
-        'useTextRecognizer': useTextRecognizer,
         'color': color != null ? [color?.r, color?.g, color?.b, color?.a] : [],
       };
 }
