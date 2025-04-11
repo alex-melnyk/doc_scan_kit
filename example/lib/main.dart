@@ -81,7 +81,6 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
       ),
       androidOptions: DocumentScanKitOptionsAndroid(
         pageLimit: pageLimit,
-        recognizerText: recognizerTextAndroid,
         saveImage: saveImageAndroid,
         isGalleryImport: isGalleryImport,
         scannerMode: scannerMode,
@@ -151,7 +150,6 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
         ),
         androidOptions: DocumentScanKitOptionsAndroid(
           pageLimit: pageLimit,
-          recognizerText: recognizerTextAndroid,
           saveImage: saveImageAndroid,
           isGalleryImport: isGalleryImport,
           scannerMode: scannerMode,
