@@ -89,7 +89,12 @@ public class DocumentScanner implements MethodChannel.MethodCallHandler, PluginR
                     handleScannerResult(result);
                 }
             }else if(resultCode == Activity.RESULT_CANCELED){
-                pendingResult.error(TAG, "Operation canceled", null);
+                 // Add null check before using pendingResult to prevent NullPointerException
+                if (pendingResult != null) {
+                    pendingResult.error(TAG, "Operation canceled", null);
+                } else {
+                    Log.e(TAG, "pendingResult is null when trying to handle cancellation");
+                }                
             }else{
                 pendingResult.error(TAG, "Unknown Error", null);
             }
@@ -188,7 +193,7 @@ public class DocumentScanner implements MethodChannel.MethodCallHandler, PluginR
         if(pages != null && !pages.isEmpty()){
             for (GmsDocumentScanningResult.Page page : pages){
                 Map<String, Object> imageData = new HashMap<>();
-             Uri imageUri = page.getImageUri();
+                Uri imageUri = page.getImageUri();
                 Context context = binding.getActivity().getApplicationContext();
                 byte[]  imageBytes = getBytesFromUri(context, imageUri);
                 imageData.put("bytes", imageBytes);
@@ -204,13 +209,19 @@ public class DocumentScanner implements MethodChannel.MethodCallHandler, PluginR
                 }else{
                     imageData.put("path", imageUri.getPath());
                 }
-                resultMap.add( imageData);
+                resultMap.add(imageData);
             }
         }else{
-            resultMap.add( null);
+            resultMap.add(null);
         }
-        pendingResult.success(resultMap);
-        pendingResult = null;
+        
+        // Add null check before using pendingResult to prevent NullPointerException
+        if (pendingResult != null) {
+            pendingResult.success(resultMap);
+            pendingResult = null;
+        } else {
+            Log.e(TAG, "pendingResult is null when trying to handle scanner result");
+        }
     }
 
 
