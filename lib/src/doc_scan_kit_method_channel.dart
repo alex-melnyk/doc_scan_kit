@@ -27,14 +27,38 @@ class MethodChannelDocScanKit extends DocScanKitPlatform {
             ?.map(
           (e) {
             e as Map;
-            return ScanResult(
-                imagePath: e['path'],
-                imagesBytes: e['bytes'],
-                text: e['text'],
-                barcode: e['barcode']);
+            return ScanResult(imagePath: e['path'], imagesBytes: e['bytes']);
           },
         ).toList() ??
         [];
+  }
+
+  @override
+
+  /// Recognizes text from image bytes
+  Future<String> recognizeText(List<int> imageBytes) async {
+    final result = await methodChannel.invokeMethod<String>(
+      'scanKit#recognizeText',
+      {
+        'imageBytes': imageBytes,
+        'id': id,
+      },
+    );
+    return result ?? '';
+  }
+
+  @override
+
+  /// Scans for QR codes in image bytes
+  Future<String> scanQrCode(List<int> imageBytes) async {
+    final result = await methodChannel.invokeMethod<String>(
+      'scanKit#scanQrCode',
+      {
+        'imageBytes': imageBytes,
+        'id': id,
+      },
+    );
+    return result ?? '';
   }
 
   @override

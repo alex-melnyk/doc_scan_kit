@@ -29,5 +29,12 @@ abstract class DocScanKitPlatform extends PlatformInterface {
       final DocumentScanKitOptionsAndroid androidOptions,
       final DocumentScanKitOptionsiOS iosOptions);
 
+  /// Recognizes text from image bytes
+  Future<String> recognizeText(List<int> imageBytes);
+
+  /// Scans for QR codes in image bytes
+  Future<String> scanQrCode(List<int> imageBytes);
+
+  /// Disposes of any resources used by the plugin on Android.
   Future<void> close();
 }
