@@ -43,32 +43,39 @@ class MockDocScanKitPlatform
 }
 
 void main() {
-  late MockDocScanKitPlatform fakePlatform;
-  late DocScanKit docScanKitPlugin;
-
-  setUp(() {
-    fakePlatform = MockDocScanKitPlatform();
-    DocScanKitPlatform.instance = fakePlatform;
-    docScanKitPlugin = DocScanKit();
-  });
+  final fakePlatform = MockDocScanKitPlatform();
 
   test('$MethodChannelDocScanKit is the default instance', () {
     expect(
         DocScanKitPlatform.instance, isInstanceOf<MethodChannelDocScanKit>());
   });
 
-  test('scanner returns scan results', () async {
-    final result = await docScanKitPlugin.scanner();
+  group('DocScanKit tests with mock', () {
+    late DocScanKit docScanKitPlugin;
 
-    expect(fakePlatform.scannerCallCount, 1);
-    expect(result.length, 1);
-    expect(result.first, isA<ScanResult>());
-    expect(result.first.imagePath, 'test/path');
-  });
+    setUp(() {
+      DocScanKitPlatform.instance = fakePlatform;
+      docScanKitPlugin = DocScanKit();
+    });
 
-  test('close should call platform implementation', () async {
-    await docScanKitPlugin.close();
+    tearDown(() {
+      // Restaura a instância padrão após cada teste
+      DocScanKitPlatform.instance = MethodChannelDocScanKit();
+    });
 
-    expect(fakePlatform.closeCalled, true);
+    test('scanner returns scan results', () async {
+      final result = await docScanKitPlugin.scanner();
+
+      expect(fakePlatform.scannerCallCount, 1);
+      expect(result.length, 1);
+      expect(result.first, isA<ScanResult>());
+      expect(result.first.imagePath, 'test/path');
+    });
+
+    test('close should call platform implementation', () async {
+      await docScanKitPlugin.close();
+
+      expect(fakePlatform.closeCalled, true);
+    });
   });
 }
