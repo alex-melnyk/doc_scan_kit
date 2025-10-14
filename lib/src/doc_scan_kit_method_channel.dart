@@ -1,5 +1,6 @@
 import 'package:doc_scan_kit/src/options/android_options.dart';
 import 'package:doc_scan_kit/src/options/ios_options.dart';
+import 'package:doc_scan_kit/src/options/ios_text_recognition_options.dart';
 import 'package:doc_scan_kit/src/options/scan_result.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -36,11 +37,13 @@ class MethodChannelDocScanKit extends DocScanKitPlatform {
   @override
 
   /// Recognizes text from image bytes
-  Future<String> recognizeText(List<int> imageBytes) async {
+  Future<String> recognizeText(List<int> imageBytes,
+      DocumentScanKitTextRecognitionOptionsiOS textRecognitionOptions) async {
     final result = await methodChannel.invokeMethod<String>(
       'scanKit#recognizeText',
       {
         'imageBytes': imageBytes,
+        'iosOptions': textRecognitionOptions.toJson(),
         'id': id,
       },
     );

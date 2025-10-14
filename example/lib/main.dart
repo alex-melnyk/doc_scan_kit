@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -55,7 +56,7 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
   // iOS configuration options
   double compressionQuality = 0.2;
   bool saveImage = true;
-  bool useQrCodeScanner = true;
+  bool useQrCodeScanner = false;
   bool useTextRecognizer = true;
   Color color = Colors.orange;
   ModalPresentationStyle modalPresentationStyle =
@@ -70,6 +71,7 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
 
   List<CustomScanResult> imageData = [];
   bool isLoading = false;
+  String? lastScanTime;
 
   Future<void> scan() async {
     DocScanKit instance = DocScanKit(
@@ -78,6 +80,14 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
         saveImage: saveImage,
         color: color,
         modalPresentationStyle: modalPresentationStyle,
+      ),
+      textRecognitionOptions: DocumentScanKitTextRecognitionOptionsiOS(
+        customWords: [
+          'document',
+        ],
+        recognitionLanguages: ['pt-BR', 'en-US', 'es-ES'],
+        usesLanguageCorrection: true,
+        recognitionLevel: RecognitionLevel.fast,
       ),
       androidOptions: DocumentScanKitOptionsAndroid(
         pageLimit: pageLimit,
@@ -89,6 +99,7 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
     try {
       setState(() => isLoading = true);
 
+      final DateTime startTime = DateTime.now();
       final List<ScanResult> images = await instance.scanner();
       List<CustomScanResult> results = [];
 
@@ -121,6 +132,13 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
       }
 
       setState(() => imageData = results);
+
+      final DateTime endTime = DateTime.now();
+      final Duration duration = endTime.difference(startTime);
+      final String timeString =
+          '${duration.inSeconds}.${duration.inMilliseconds % 1000}s';
+      setState(() => lastScanTime = timeString);
+      debugPrint('Scan completed in $timeString');
     } on PlatformException catch (e) {
       debugPrint('Failed $e');
     } finally {
@@ -158,6 +176,7 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
 
       List<CustomScanResult> results = [];
 
+      final DateTime startTime = DateTime.now();
       for (var selectedImage in selectedImages) {
         final Uint8List imageUint8List =
             Uint8List.fromList(await selectedImage.readAsBytes());
@@ -170,7 +189,17 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
         // Text recognition
         if (recognizerTextAndroid || useTextRecognizer) {
           try {
-            customResult.text = await instance.recognizeText(imageUint8List);
+            customResult.text = await instance.recognizeText(
+              imageUint8List,
+              DocumentScanKitTextRecognitionOptionsiOS(
+                customWords: [
+                  'document',
+                ],
+                recognitionLanguages: ['pt-BR', 'en-US', 'es-ES'],
+                usesLanguageCorrection: true,
+                recognitionLevel: RecognitionLevel.accurate,
+              ),
+            );
           } catch (e) {
             debugPrint('Text recognition failed: $e');
           }
@@ -180,6 +209,7 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
         if (useQrCodeScanner) {
           try {
             customResult.qrCode = await instance.scanQrCode(imageUint8List);
+            log('QR Code content: ${customResult.qrCode}');
           } catch (e) {
             debugPrint('QR Code scanning failed: $e');
           }
@@ -189,6 +219,14 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
       }
 
       setState(() => imageData.addAll(results));
+
+      final DateTime endTime = DateTime.now();
+      final Duration duration = endTime.difference(startTime);
+      final String timeString =
+          '${duration.inSeconds}.${duration.inMilliseconds % 1000}s';
+      setState(() => lastScanTime = timeString);
+      debugPrint('Gallery processing completed in $timeString');
+
       instance.close();
     } catch (e) {
       debugPrint('Error processing gallery images: $e');
@@ -280,7 +318,20 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
           ? const Center(child: CircularProgressIndicator())
           : imageData.isEmpty
               ? const Center(child: Text('No documents scanned yet'))
-              : ScanResultsList(imageData: imageData),
+              : Column(
+                  children: [
+                    if (lastScanTime != null)
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Último scan levou: $lastScanTime',
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    Expanded(child: ScanResultsList(imageData: imageData)),
+                  ],
+                ),
     );
   }
 }
@@ -558,7 +609,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen>
                 const Text('Modal Presentation Style',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 DropdownButtonFormField<ModalPresentationStyle>(
-                  value: _modalPresentationStyle,
+                  initialValue: _modalPresentationStyle,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     contentPadding: EdgeInsets.symmetric(horizontal: 12),
@@ -643,7 +694,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen>
                 const Text('Scanner Mode',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 DropdownButtonFormField<ScannerModeAndroid>(
-                  value: _scannerMode,
+                  initialValue: _scannerMode,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     contentPadding: EdgeInsets.symmetric(horizontal: 12),

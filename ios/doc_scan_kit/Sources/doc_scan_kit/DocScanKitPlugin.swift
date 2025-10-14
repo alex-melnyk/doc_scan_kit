@@ -1,4 +1,5 @@
 import Flutter
+import Vision
 import UIKit
 
 @available(iOS 13.0, *)
@@ -57,16 +58,24 @@ public class DocScanKitPlugin: NSObject, FlutterPlugin {
       }
     case "scanKit#recognizeText":
       guard let args = call.arguments as? [String: Any],
-            let imageBytes = args["imageBytes"] as? FlutterStandardTypedData else {
+            let imageBytes = args["imageBytes"] as? FlutterStandardTypedData,
+            let iosOptions = args["iosOptions"] as? [String: Any] else {
         return result(FlutterError(code: "invalid_arguments",
-                                   message: "Invalid or missing image data",
-                                   details: "Expected image bytes for text recognition"))
+                                   message: "Invalid or missing image data or iOS options",
+                                   details: "Expected image bytes and iOS options for text recognition"))
       }
-      
+
+      // Extract recognition options
+      let recognitionLevelInt = iosOptions["recognitionLevel"] as? Int ?? 0
+      let recognitionLevel: VNRequestTextRecognitionLevel = recognitionLevelInt == 0 ? .accurate : .fast
+      let usesLanguageCorrection = iosOptions["usesLanguageCorrection"] as? Bool ?? true
+      let customWords = iosOptions["customWords"] as? [String] ?? []
+      let recognitionLanguages = iosOptions["recognitionLanguages"] as? [String] ?? []
+
       // Convert FlutterStandardTypedData to UIImage
       if let image = UIImage(data: imageBytes.data) {
-          
-          let recognizedText = TextRecognizeViewController().recognizeText(from: image)
+
+          let recognizedText = TextRecognizeViewController().recognizeText(from: image, recognitionLevel: recognitionLevel, usesLanguageCorrection: usesLanguageCorrection, customWords: customWords, recognitionLanguages: recognitionLanguages)
           result(recognizedText)
       } else {
           result(FlutterError(code: "image_error",
@@ -81,10 +90,10 @@ public class DocScanKitPlugin: NSObject, FlutterPlugin {
                                    message: "Invalid or missing image data",
                                    details: "Expected image bytes for QR code scanning"))
       }
-      
+
       // Convert FlutterStandardTypedData to UIImage
       if let image = UIImage(data: imageBytes.data) {
-          
+
           let barcodeResults = TextRecognizeViewController().detectBarcode(from: image)
           result(barcodeResults)
       } else {
@@ -92,7 +101,13 @@ public class DocScanKitPlugin: NSObject, FlutterPlugin {
                              message: "Failed to create image from bytes",
                              details: nil))
       }
-      
+
+    case "scanKit#closeDocumentScanner":
+      if let viewController = UIApplication.shared.delegate?.window??.rootViewController {
+        viewController.presentedViewController?.dismiss(animated: true)
+      }
+      result(nil)
+
     default:
       result(FlutterMethodNotImplemented)
     }

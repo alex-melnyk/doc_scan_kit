@@ -1,5 +1,6 @@
 import 'package:doc_scan_kit/src/options/android_options.dart';
 import 'package:doc_scan_kit/src/options/ios_options.dart';
+import 'package:doc_scan_kit/src/options/ios_text_recognition_options.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'doc_scan_kit_method_channel.dart';
 import 'options/scan_result.dart';
@@ -30,7 +31,8 @@ abstract class DocScanKitPlatform extends PlatformInterface {
       final DocumentScanKitOptionsiOS iosOptions);
 
   /// Recognizes text from image bytes
-  Future<String> recognizeText(List<int> imageBytes);
+  Future<String> recognizeText(List<int> imageBytes,
+      DocumentScanKitTextRecognitionOptionsiOS textRecognitionOptions);
 
   /// Scans for QR codes in image bytes
   Future<String> scanQrCode(List<int> imageBytes);

@@ -4,10 +4,12 @@ import 'doc_scan_kit_platform_interface.dart';
 class DocScanKit {
   final DocumentScanKitOptionsAndroid? androidOptions;
   final DocumentScanKitOptionsiOS? iosOptions;
+  final DocumentScanKitTextRecognitionOptionsiOS? textRecognitionOptions;
 
   DocScanKit({
     this.androidOptions,
     this.iosOptions,
+    this.textRecognitionOptions,
   });
 
   Future<List<ScanResult>> scanner() {
@@ -19,8 +21,16 @@ class DocScanKit {
   /// Recognizes text from the provided image bytes
   ///
   /// Returns the recognized text as a string
-  Future<String> recognizeText(List<int> imageBytes) {
-    return DocScanKitPlatform.instance.recognizeText(imageBytes);
+  Future<String> recognizeText(
+    List<int> imageBytes, [
+    DocumentScanKitTextRecognitionOptionsiOS? textRecognitionOptions,
+  ]) {
+    return DocScanKitPlatform.instance.recognizeText(
+      imageBytes,
+      textRecognitionOptions ??
+          this.textRecognitionOptions ??
+          DocumentScanKitTextRecognitionOptionsiOS(),
+    );
   }
 
   /// Scans for QR codes in the provided image bytes

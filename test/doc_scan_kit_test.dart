@@ -12,7 +12,8 @@ class MockDocScanKitPlatform
   int scannerCallCount = 0;
 
   @override
-  Future<String> recognizeText(List<int> imageBytes) async {
+  Future<String> recognizeText(List<int> imageBytes,
+      DocumentScanKitTextRecognitionOptionsiOS textRecognitionOptions) async {
     return Future.value("Mocked recognized text");
   }
 
