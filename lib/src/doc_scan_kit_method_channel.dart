@@ -25,7 +25,7 @@ class MethodChannelDocScanKit extends DocScanKitPlatform {
     final result = await methodChannel.invokeMethod<List<Object?>>(
       'scanKit#startDocumentScanner',
       <String, dynamic>{
-        'androidOptions': androidOptions.toJson(),
+        'options': androidOptions.toJson(),
         'id': id,
         'iosOptions': iosOptions.toJson(),
       },

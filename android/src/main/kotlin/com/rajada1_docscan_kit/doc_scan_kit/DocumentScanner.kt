@@ -96,8 +96,8 @@ class DocumentScanner(
             return
         }
 
-        extractedOptions = call.argument("androidOptions") ?: run {
-            result.error(TAG, "Missing androidOptions parameter", null)
+        extractedOptions = call.argument("options") ?: run {
+            result.error(TAG, "Missing options parameter", null)
             return
         }
 
