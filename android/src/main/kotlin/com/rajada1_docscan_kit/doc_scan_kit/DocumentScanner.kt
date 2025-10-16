@@ -110,7 +110,9 @@ class DocumentScanner(
         try {
             val intentSender = scanner.getStartScanIntent(binding.activity).await()
             binding.activity.startIntentSenderForResult(
-                intentSender, START_DOCUMENT_ACTIVITY, null, 0, 0, 0
+                intentSender,
+                START_DOCUMENT_ACTIVITY,
+                null, 0, 0, 0
             )
         } catch (e: Exception) {
             result.error(TAG, "Failed to start document scanner: ${e.message}", null)
@@ -131,8 +133,11 @@ class DocumentScanner(
             else -> GmsDocumentScannerOptions.RESULT_FORMAT_JPEG
         }
 
-        return GmsDocumentScannerOptions.Builder().setGalleryImportAllowed(isGalleryImport)
-            .setPageLimit(pageLimit).setResultFormats(resultFormat).setScannerMode(scannerMode)
+        return GmsDocumentScannerOptions.Builder()
+            .setGalleryImportAllowed(isGalleryImport)
+            .setPageLimit(pageLimit)
+            .setResultFormats(resultFormat)
+            .setScannerMode(scannerMode)
             .build()
     }
 
@@ -160,7 +165,8 @@ class DocumentScanner(
 
             !result.pages.isNullOrEmpty() -> result.pages?.map {
                 mutableMapOf(
-                    "type" to "jpeg", "path" to it.imageUri.path
+                    "type" to "jpeg",
+                    "path" to it.imageUri.path
                 )
             }
 
@@ -213,7 +219,8 @@ class DocumentScanner(
         try {
             FileOutputStream(tempFile).use { it.write(imageBytes) }
             return InputImage.fromFilePath(
-                binding.activity.applicationContext, Uri.fromFile(tempFile)
+                binding.activity.applicationContext,
+                Uri.fromFile(tempFile)
             )
         } finally {
             if (!tempFile.delete()) {
@@ -225,19 +232,9 @@ class DocumentScanner(
     private suspend fun <T> Task<T>.await(): T = suspendCoroutine { continuation ->
         addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                val result = task.result
-                if (result != null) {
-                    continuation.resume(result)
-                } else {
-                    continuation.resumeWithException(NullPointerException("Task result is null"))
-                }
+                continuation.resume(task.result!!)
             } else {
-                val exception = task.exception
-                if (exception != null) {
-                    continuation.resumeWithException(exception)
-                } else {
-                    continuation.resumeWithException(Exception("Task failed with unknown exception"))
-                }
+                continuation.resumeWithException(task.exception!!)
             }
         }
     }
