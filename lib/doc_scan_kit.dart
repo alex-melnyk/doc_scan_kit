@@ -1,4 +1,6 @@
 export 'package:doc_scan_kit/src/doc_scan_kit.dart';
+export 'package:doc_scan_kit/src/doc_scan_kit_platform_android.dart';
+export 'package:doc_scan_kit/src/doc_scan_kit_platform_ios.dart';
 export 'package:doc_scan_kit/src/models/doc_scan_kit_format.dart';
 export 'package:doc_scan_kit/src/models/doc_scan_kit_options_android.dart';
 export 'package:doc_scan_kit/src/models/doc_scan_kit_options_ios.dart';

@@ -34,8 +34,8 @@ class DocScanKit {
   ///
   /// If platform-specific options are not provided, default options will be used.
   const DocScanKit({
-    this.androidOptions,
-    this.iosOptions,
+    this.androidOptions = const DocScanKitOptionsAndroid(),
+    this.iosOptions = const DocScanKitOptionsIOS(),
   });
 
   /// Platform-specific options for Android devices.
@@ -44,7 +44,7 @@ class DocScanKit {
   /// scanner modes, and gallery import capabilities.
   ///
   /// If null, default [DocScanKitOptionsAndroid] will be used.
-  final DocScanKitOptionsAndroid? androidOptions;
+  final DocScanKitOptionsAndroid androidOptions;
 
   /// Platform-specific options for iOS devices.
   ///
@@ -52,7 +52,7 @@ class DocScanKit {
   /// image compression quality, and UI tint colors.
   ///
   /// If null, default [DocScanKitOptionsIOS] will be used.
-  final DocScanKitOptionsIOS? iosOptions;
+  final DocScanKitOptionsIOS iosOptions;
 
   /// Launches the native document scanner interface and returns scanned results.
   ///
@@ -85,12 +85,9 @@ class DocScanKit {
   ///   print('Scanning failed: $e');
   /// }
   /// ```
-  Future<List<DocScanKitResult>> scanner() =>
-      DocScanKitPlatform.instance.scanner(
-        Platform.isAndroid
-            ? (androidOptions ?? const DocScanKitOptionsAndroid())
-            : (iosOptions ?? const DocScanKitOptionsIOS()),
-      );
+  Future<List<DocScanKitResult>> scanner() {
+    return DocScanKitPlatform.instance.scanner();
+  }
 
   /// Performs Optical Character Recognition (OCR) on the provided image bytes.
   ///
@@ -115,7 +112,7 @@ class DocScanKit {
   /// final recognizedText = await docScanKit.recognizeText(imageBytes);
   /// print('Extracted text: $recognizedText');
   /// ```
-  Future<String> recognizeText(List<int> imageBytes) =>
+  Future<String> recognizeText(final List<int> imageBytes) =>
       DocScanKitPlatform.instance.recognizeText(imageBytes);
 
   /// Scans and decodes QR codes from the provided image bytes.
@@ -143,7 +140,7 @@ class DocScanKit {
   ///   print('No QR code found');
   /// }
   /// ```
-  Future<String> scanQrCode(List<int> imageBytes) =>
+  Future<String> scanQrCode(final List<int> imageBytes) =>
       DocScanKitPlatform.instance.scanQrCode(imageBytes);
 
   /// Releases any resources and closes active scanner sessions.

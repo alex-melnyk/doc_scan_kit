@@ -24,14 +24,14 @@ abstract class DocScanKitPlatform extends PlatformInterface {
 
   /// The current platform implementation instance.
   ///
-  /// Defaults to [MethodChannelDocScanKit] which provides method channel
+  /// Defaults to [DocScanKitMethodChannel] which provides method channel
   /// communication with native platform code.
-  static DocScanKitPlatform _instance = MethodChannelDocScanKit();
+  static late DocScanKitPlatform _instance;
 
   /// The default instance of [DocScanKitPlatform] to use for all operations.
   ///
   /// This getter returns the currently registered platform implementation.
-  /// By default, it returns [MethodChannelDocScanKit], but can be overridden
+  /// By default, it returns [DocScanKitMethodChannel], but can be overridden
   /// by platform-specific plugins or for testing purposes.
   static DocScanKitPlatform get instance => _instance;
 
@@ -61,7 +61,7 @@ abstract class DocScanKitPlatform extends PlatformInterface {
   /// representing the scanned documents.
   ///
   /// Should throw [PlatformException] if scanning fails or permissions are denied.
-  Future<List<DocScanKitResult>> scanner(final DocScanKitOptions options);
+  Future<List<DocScanKitResult>> scanner();
 
   /// Performs text recognition on the provided image bytes.
   ///
@@ -72,7 +72,7 @@ abstract class DocScanKitPlatform extends PlatformInterface {
   ///
   /// Returns a [Future] that completes with the recognized text as a [String].
   /// Should return an empty string if no text is found or recognition fails.
-  Future<String> recognizeText(List<int> imageBytes);
+  Future<String> recognizeText(final List<int> imageBytes);
 
   /// Scans for QR codes in the provided image bytes.
   ///
@@ -83,7 +83,7 @@ abstract class DocScanKitPlatform extends PlatformInterface {
   ///
   /// Returns a [Future] that completes with the decoded QR code content as a [String].
   /// Should return an empty string if no QR code is found or decoding fails.
-  Future<String> scanQrCode(List<int> imageBytes);
+  Future<String> scanQrCode(final List<int> imageBytes);
 
   /// Releases platform-specific resources and closes active sessions.
   ///

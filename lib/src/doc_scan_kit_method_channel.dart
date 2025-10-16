@@ -1,3 +1,4 @@
+import 'package:doc_scan_kit/src/models/doc_scan_kit_method.dart';
 import 'package:doc_scan_kit/src/models/doc_scan_kit_options.dart';
 import 'package:doc_scan_kit/src/models/doc_scan_kit_result.dart';
 import 'package:doc_scan_kit/src/models/doc_scan_kit_result_type.dart';
@@ -14,7 +15,12 @@ import 'doc_scan_kit_platform.dart';
 ///
 /// This implementation is automatically registered as the default platform
 /// implementation and handles communication with both Android and iOS native code.
-class MethodChannelDocScanKit extends DocScanKitPlatform {
+abstract class DocScanKitMethodChannel extends DocScanKitPlatform {
+  DocScanKitMethodChannel({required this.options});
+
+  /// The options for the document scanner.
+  final DocScanKitOptions options;
+
   /// The method channel used to communicate with native platform implementations.
   ///
   /// This channel is used for all method calls to native code including
@@ -32,6 +38,9 @@ class MethodChannelDocScanKit extends DocScanKitPlatform {
   /// It helps distinguish between multiple plugin instances and manage
   /// platform-specific resources properly.
   final id = DateTime.now().microsecondsSinceEpoch.toString();
+
+  /// Sets the options for the document scanner.
+  set options(final DocScanKitOptions options) => this.options = options;
 
   /// Invokes the native document scanner through method channel communication.
   ///
@@ -51,15 +60,10 @@ class MethodChannelDocScanKit extends DocScanKitPlatform {
   ///
   /// Throws [PlatformException] if the native scanner encounters an error.
   @override
-  Future<List<DocScanKitResult>> scanner(
-    final DocScanKitOptions options,
-  ) async {
+  Future<List<DocScanKitResult>> scanner() async {
     final result = await methodChannel.invokeMethod<List<Object?>>(
-      'scanKit#startDocumentScanner',
-      <String, dynamic>{
-        'id': id,
-        'options': options.toJson(),
-      },
+      DocScanKitMethod.startDocumentScanner.platformName,
+      {'id': id, 'options': options.toJson()},
     );
 
     return result
@@ -70,58 +74,6 @@ class MethodChannelDocScanKit extends DocScanKitPlatform {
                 ))
             .toList() ??
         [];
-  }
-
-  /// Invokes native text recognition through method channel communication.
-  ///
-  /// This method sends the image bytes to the native platform implementation
-  /// via the 'scanKit#recognizeText' method call for OCR processing.
-  ///
-  /// [imageBytes] - Raw bytes of the image file to process for text recognition.
-  ///
-  /// The native implementation will:
-  /// 1. Convert the byte array to a platform-specific image format
-  /// 2. Apply OCR using platform-specific text recognition APIs
-  /// 3. Return the extracted text as a string
-  ///
-  /// Returns a [Future] that completes with the recognized text as a [String].
-  /// Returns an empty string if no text is found or recognition fails.
-  @override
-  Future<String> recognizeText(List<int> imageBytes) async {
-    final result = await methodChannel.invokeMethod<String>(
-      'scanKit#recognizeText',
-      {
-        'imageBytes': imageBytes,
-        'id': id,
-      },
-    );
-    return result ?? '';
-  }
-
-  /// Invokes native QR code scanning through method channel communication.
-  ///
-  /// This method sends the image bytes to the native platform implementation
-  /// via the 'scanKit#scanQrCode' method call for barcode detection and decoding.
-  ///
-  /// [imageBytes] - Raw bytes of the image file containing QR code(s) to scan.
-  ///
-  /// The native implementation will:
-  /// 1. Convert the byte array to a platform-specific image format
-  /// 2. Detect and decode QR codes using platform-specific barcode APIs
-  /// 3. Return the decoded content as a string
-  ///
-  /// Returns a [Future] that completes with the QR code content as a [String].
-  /// Returns an empty string if no QR code is found or decoding fails.
-  @override
-  Future<String> scanQrCode(List<int> imageBytes) async {
-    final result = await methodChannel.invokeMethod<String>(
-      'scanKit#scanQrCode',
-      {
-        'imageBytes': imageBytes,
-        'id': id,
-      },
-    );
-    return result ?? '';
   }
 
   /// Closes the scanner and releases native resources through method channel.
@@ -142,8 +94,54 @@ class MethodChannelDocScanKit extends DocScanKitPlatform {
   @override
   Future<void> close() {
     return methodChannel.invokeMethod<void>(
-      "scanKit#closeDocumentScanner",
+      DocScanKitMethod.closeDocumentScanner.platformName,
       {'id': id},
     );
+  }
+
+  /// Invokes native text recognition through method channel communication.
+  ///
+  /// This method sends the image bytes to the native platform implementation
+  /// via the 'scanKit#recognizeText' method call for OCR processing.
+  ///
+  /// [imageBytes] - Raw bytes of the image file to process for text recognition.
+  ///
+  /// The native implementation will:
+  /// 1. Convert the byte array to a platform-specific image format
+  /// 2. Apply OCR using platform-specific text recognition APIs
+  /// 3. Return the extracted text as a string
+  ///
+  /// Returns a [Future] that completes with the recognized text as a [String].
+  /// Returns an empty string if no text is found or recognition fails.
+  @override
+  Future<String> recognizeText(final List<int> imageBytes) async {
+    final result = await methodChannel.invokeMethod<String>(
+      DocScanKitMethod.recognizeText.platformName,
+      {'id': id, 'imageBytes': imageBytes},
+    );
+    return result ?? '';
+  }
+
+  /// Invokes native QR code scanning through method channel communication.
+  ///
+  /// This method sends the image bytes to the native platform implementation
+  /// via the 'scanKit#scanQrCode' method call for barcode detection and decoding.
+  ///
+  /// [imageBytes] - Raw bytes of the image file containing QR code(s) to scan.
+  ///
+  /// The native implementation will:
+  /// 1. Convert the byte array to a platform-specific image format
+  /// 2. Detect and decode QR codes using platform-specific barcode APIs
+  /// 3. Return the decoded content as a string
+  ///
+  /// Returns a [Future] that completes with the QR code content as a [String].
+  /// Returns an empty string if no QR code is found or decoding fails.
+  @override
+  Future<String> scanQrCode(final List<int> imageBytes) async {
+    final result = await methodChannel.invokeMethod<String>(
+      DocScanKitMethod.scanQrCode.platformName,
+      {'id': id, 'imageBytes': imageBytes},
+    );
+    return result ?? '';
   }
 }
