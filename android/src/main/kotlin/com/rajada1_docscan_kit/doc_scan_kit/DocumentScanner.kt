@@ -129,7 +129,7 @@ class DocumentScanner(
             else -> GmsDocumentScannerOptions.SCANNER_MODE_FULL
         }
         val resultFormat = when (options["format"]) {
-            "pdf" -> GmsDocumentScannerOptions.RESULT_FORMAT_PDF
+            "document" -> GmsDocumentScannerOptions.RESULT_FORMAT_PDF
             else -> GmsDocumentScannerOptions.RESULT_FORMAT_JPEG
         }
 
@@ -165,7 +165,7 @@ class DocumentScanner(
 
             !result.pages.isNullOrEmpty() -> result.pages?.map {
                 mutableMapOf(
-                    "type" to "jpg",
+                    "type" to "jpeg",
                     "path" to it.imageUri.path
                 )
             }

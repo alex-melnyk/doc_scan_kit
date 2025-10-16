@@ -5,5 +5,5 @@ enum DocScanKitFormat {
   images,
 
   /// Indicates that result will be PDF file.
-  pdf;
+  document;
 }

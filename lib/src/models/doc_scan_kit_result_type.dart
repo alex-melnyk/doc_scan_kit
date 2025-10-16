@@ -1,8 +1,7 @@
-/// DocScanKitResultType is an enum that represents the type
-/// of the scanned document.
+/// Represents the type of the scanned document.
 enum DocScanKitResultType {
   /// Image file.
-  jpg,
+  jpeg,
 
   /// PDF file.
   pdf;
