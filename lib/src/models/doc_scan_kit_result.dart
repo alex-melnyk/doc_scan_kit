@@ -1,15 +1,12 @@
-import 'dart:typed_data';
+import 'package:doc_scan_kit/src/models/doc_scan_kit_result_type.dart';
 
 /// ScanResult is a class that represents the result of a document scan.
 class DocScanKitResult {
-  const DocScanKitResult({
-    required this.imagePath,
-    required this.imagesBytes,
-  });
+  const DocScanKitResult({required this.type, required this.path});
 
-  /// Path to the scanned image.
-  final String? imagePath;
+  /// Type of the scanned document.
+  final DocScanKitResultType type;
 
-  /// Bytes of the scanned image.
-  final Uint8List imagesBytes;
+  /// Path to the scanned file.
+  final String? path;
 }

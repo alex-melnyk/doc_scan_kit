@@ -1,5 +1,6 @@
 import 'package:doc_scan_kit/src/models/doc_scan_kit_options.dart';
 import 'package:doc_scan_kit/src/models/doc_scan_kit_result.dart';
+import 'package:doc_scan_kit/src/models/doc_scan_kit_result_type.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -17,7 +18,9 @@ class MethodChannelDocScanKit extends DocScanKitPlatform {
   /// Starts the document scanner and returns the scanned images
   /// as a list of [DocScanKitResult].
   @override
-  Future<List<DocScanKitResult>> scanner(final DocScanKitOptions options) async {
+  Future<List<DocScanKitResult>> scanner(
+    final DocScanKitOptions options,
+  ) async {
     final result = await methodChannel.invokeMethod<List<Object?>>(
       'scanKit#startDocumentScanner',
       <String, dynamic>{
@@ -26,10 +29,13 @@ class MethodChannelDocScanKit extends DocScanKitPlatform {
       },
     );
 
-    return result?.map((e) {
-          e as Map;
-          return DocScanKitResult(imagePath: e['path'], imagesBytes: e['bytes']);
-        }).toList() ??
+    return result
+            ?.cast<Map>()
+            .map((e) => DocScanKitResult(
+                  type: DocScanKitResultType.values.byName(e['type']),
+                  path: e['path'] as String,
+                ))
+            .toList() ??
         [];
   }
 

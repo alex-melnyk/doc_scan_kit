@@ -1,7 +1,6 @@
 package com.rajada1_docscan_kit.doc_scan_kit
 
 import android.app.Activity
-import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.google.android.gms.tasks.Task
@@ -17,10 +16,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -58,9 +55,11 @@ class DocumentScanner(
                             }
                         }
                     }
+
                     Activity.RESULT_CANCELED -> {
                         pendingResult?.error(TAG, "Operation canceled", null)
                     }
+
                     else -> {
                         pendingResult?.error(TAG, "Unknown Error", null)
                     }
@@ -129,25 +128,29 @@ class DocumentScanner(
             "filter" -> GmsDocumentScannerOptions.SCANNER_MODE_BASE_WITH_FILTER
             else -> GmsDocumentScannerOptions.SCANNER_MODE_FULL
         }
+        val resultFormat = when (options["format"]) {
+            "pdf" -> GmsDocumentScannerOptions.RESULT_FORMAT_PDF
+            else -> GmsDocumentScannerOptions.RESULT_FORMAT_JPEG
+        }
 
         return GmsDocumentScannerOptions.Builder()
             .setGalleryImportAllowed(isGalleryImport)
             .setPageLimit(pageLimit)
-            .setResultFormats(GmsDocumentScannerOptions.RESULT_FORMAT_JPEG)
+            .setResultFormats(resultFormat)
             .setScannerMode(scannerMode)
             .build()
     }
 
     private fun closeScanner(call: MethodCall) {
         val id = call.argument<String>("id") ?: return
-        
+
         instances.remove(id) // GmsDocumentScanner doesn't have a close method
-        
+
         instancesTextRecognizer[id]?.let {
             it.closedTextRecognizer()
             instancesTextRecognizer.remove(id)
         }
-        
+
         instancesBarCode[id]?.let {
             it.close()
             instancesBarCode.remove(id)
@@ -155,62 +158,36 @@ class DocumentScanner(
     }
 
     private suspend fun handleScannerResult(result: GmsDocumentScanningResult) {
-        val pages = result.pages ?: run {
-            pendingResult?.success(listOf<Map<String, Any>>(emptyMap()))
-            pendingResult = null
-            return
-        }
+        val fileUris = when {
+            !result.pdf?.uri?.path.isNullOrEmpty() -> listOf(
+                mutableMapOf("type" to "pdf", "path" to result.pdf?.uri?.path)
+            )
 
-        val resultMap = pages.mapNotNull { page ->
-            try {
-                val imageUri = page.imageUri ?: return@mapNotNull null
-                val context = binding.activity.applicationContext
-                val imageBytes = getBytesFromUri(context, imageUri) ?: return@mapNotNull null
-
-                val imageData = mutableMapOf<String, Any>("bytes" to imageBytes)
-
-                val saveImage = extractedOptions?.get("saveImage") as? Boolean ?: true
-                if (!saveImage) {
-                    File(imageUri.path ?: "").deleteOnExit()
-                } else {
-                    imageData["path"] = imageUri.path ?: ""
-                }
-
-                imageData
-            } catch (e: Exception) {
-                Log.e(TAG, "Error processing page", e)
-                null
+            !result.pages.isNullOrEmpty() -> result.pages?.map {
+                mutableMapOf(
+                    "type" to "jpg",
+                    "path" to it.imageUri.path
+                )
             }
+
+            else -> emptyList()
         }
-        
-        pendingResult?.success(resultMap)
+
+        pendingResult?.success(fileUris)
         pendingResult = null
-    }
-
-    @Throws(IOException::class)
-    private fun getBytesFromUri(context: Context, uri: Uri): ByteArray? {
-        return context.contentResolver.openInputStream(uri)?.use { inputStream ->
-            ByteArrayOutputStream().use { outputStream ->
-                val buffer = ByteArray(4096)
-                var bytesRead: Int
-                while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                    outputStream.write(buffer, 0, bytesRead)
-                }
-                outputStream.toByteArray()
-            }
-        }
     }
 
     private suspend fun startRecognizeText(call: MethodCall, result: MethodChannel.Result) {
         try {
-            val id = call.argument<String>("id") ?: throw IllegalArgumentException("Missing id parameter")
-            val imageBytes = call.argument<ByteArray>("imageBytes") ?: 
-                throw IllegalArgumentException("Missing imageBytes parameter")
+            val id = call.argument<String>("id")
+                ?: throw IllegalArgumentException("Missing id parameter")
+            val imageBytes = call.argument<ByteArray>("imageBytes")
+                ?: throw IllegalArgumentException("Missing imageBytes parameter")
 
             val textRecognizer = instancesTextRecognizer.getOrPut(id) { TextRecognizer() }
             val inputImage = getInputImageByByteArray(imageBytes)
             val text = textRecognizer.handleDetection2(inputImage)
-            
+
             result.success(text)
         } catch (e: Exception) {
             Log.e(TAG, "Error in text recognition", e)
@@ -220,9 +197,10 @@ class DocumentScanner(
 
     private suspend fun startScanQrCode(call: MethodCall, result: MethodChannel.Result) {
         try {
-            val id = call.argument<String>("id") ?: throw IllegalArgumentException("Missing id parameter")
-            val imageBytes = call.argument<ByteArray>("imageBytes") ?:
-                throw IllegalArgumentException("Missing imageBytes parameter")
+            val id = call.argument<String>("id")
+                ?: throw IllegalArgumentException("Missing id parameter")
+            val imageBytes = call.argument<ByteArray>("imageBytes")
+                ?: throw IllegalArgumentException("Missing imageBytes parameter")
 
             val barcodeScanner = instancesBarCode.getOrPut(id) { DocScanBarcodeScanner() }
             val inputImage = getInputImageByByteArray(imageBytes)
@@ -240,7 +218,10 @@ class DocumentScanner(
         val tempFile = File.createTempFile("temp_image", ".jpeg", binding.activity.cacheDir)
         try {
             FileOutputStream(tempFile).use { it.write(imageBytes) }
-            return InputImage.fromFilePath(binding.activity.applicationContext, Uri.fromFile(tempFile))
+            return InputImage.fromFilePath(
+                binding.activity.applicationContext,
+                Uri.fromFile(tempFile)
+            )
         } finally {
             if (!tempFile.delete()) {
                 Log.w(TAG, "Failed to delete temporary file")

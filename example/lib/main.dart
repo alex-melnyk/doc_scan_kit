@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:doc_scan_kit/doc_scan_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -54,26 +52,26 @@ class DocumentScannerScreen extends StatefulWidget {
 
 class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
   // iOS configuration options
-  double compressionQuality = 0.2;
   DocScanKitFormat format = DocScanKitFormat.images;
-  bool useQrCodeScanner = true;
-  bool useTextRecognizer = true;
+  double compressionQuality = 0.2;
+  bool useQrCodeScanner = false;
+  bool useTextRecognizer = false;
   Color color = Colors.orange;
   ModalPresentationStyleIOS modalPresentationStyle =
       ModalPresentationStyleIOS.overFullScreen;
 
   // Android configuration options
+  DocScanKitFormat formatAndroid = DocScanKitFormat.images;
   int pageLimit = 3;
   bool recognizerTextAndroid = false;
-  DocScanKitFormat formatAndroid = DocScanKitFormat.images;
-  bool isGalleryImport = true;
+  bool isGalleryImport = false;
   ScannerModeAndroid scannerMode = ScannerModeAndroid.full;
 
   List<CustomScanResult> imageData = [];
   bool isLoading = false;
 
   Future<void> scan() async {
-    DocScanKit instance = DocScanKit(
+    final instance = DocScanKit(
       iosOptions: DocScanKitOptionsIOS(
         compressionQuality: compressionQuality,
         format: format,
@@ -90,35 +88,35 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
     try {
       setState(() => isLoading = true);
 
-      final List<DocScanKitResult> images = await instance.scanner();
-      List<CustomScanResult> results = [];
+      final List<DocScanKitResult> files = await instance.scanner();
+      final results = <CustomScanResult>[];
 
-      for (var image in images) {
-        CustomScanResult customResult = CustomScanResult(
-          imagesBytes: image.imagesBytes,
-          imagePath: image.imagePath,
-        );
-
-        // Processing text recognition if enabled
-        if ((recognizerTextAndroid && Platform.isAndroid) ||
-            (useTextRecognizer && Platform.isIOS)) {
-          try {
-            customResult.text = await instance.recognizeText(image.imagesBytes);
-          } catch (e) {
-            debugPrint('Text recognition failed: $e');
-          }
-        }
-
-        // Processing QR code if enabled
-        if (useQrCodeScanner) {
-          try {
-            customResult.qrCode = await instance.scanQrCode(image.imagesBytes);
-          } catch (e) {
-            debugPrint('QR Code scanning failed: $e');
-          }
-        }
-
-        results.add(customResult);
+      for (final file in files) {
+        // CustomScanResult customResult = CustomScanResult(
+        //   imagesBytes: file.imagesBytes,
+        //   imagePath: file.imagePath,
+        // );
+        //
+        // // Processing text recognition if enabled
+        // if ((recognizerTextAndroid && Platform.isAndroid) ||
+        //     (useTextRecognizer && Platform.isIOS)) {
+        //   try {
+        //     customResult.text = await instance.recognizeText(file.imagesBytes);
+        //   } catch (e) {
+        //     debugPrint('Text recognition failed: $e');
+        //   }
+        // }
+        //
+        // // Processing QR code if enabled
+        // if (useQrCodeScanner) {
+        //   try {
+        //     customResult.qrCode = await instance.scanQrCode(file.imagesBytes);
+        //   } catch (e) {
+        //     debugPrint('QR Code scanning failed: $e');
+        //   }
+        // }
+        //
+        // results.add(customResult);
       }
 
       setState(() => imageData = results);
