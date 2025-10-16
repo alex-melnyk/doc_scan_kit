@@ -14,9 +14,10 @@ import 'package:doc_scan_kit/src/models/doc_scan_kit_result_type.dart';
 /// final results = await docScanKit.scanner();
 /// for (final result in results) {
 ///   print('Scanned ${result.type.name}: ${result.path}');
-///   if (result.path != null) {
-///     final file = File(result.path!);
-///     // Process the scanned file...
+///   final file = File(result.path);
+///   // Process the scanned file...
+///   if (await file.exists()) {
+///     // File operations...
 ///   }
 /// }
 /// ```
@@ -41,7 +42,11 @@ class DocScanKitResult {
   /// This path points to the location on the device where the scanned file
   /// has been saved. The file can be accessed using standard file I/O operations.
   ///
-  /// The path is typically in the app's documents directory and includes
-  /// the full filename with appropriate extension (.jpg or .pdf).
+  /// The path is always provided and points to a valid file location in the
+  /// app's documents directory. It includes the full filename with the
+  /// appropriate extension (.jpg for JPEG files, .pdf for PDF documents).
+  ///
+  /// The file is guaranteed to exist at this path when the result is returned,
+  /// though it may be moved or deleted by the system or app later.
   final String path;
 }

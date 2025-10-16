@@ -20,7 +20,7 @@ abstract class DocScanKitPlatform extends PlatformInterface {
   DocScanKitPlatform() : super(token: _token);
 
   /// Verification token used to ensure platform implementations are properly registered.
-  static final Object _token = Object();
+  static final _token = Object();
 
   /// The current platform implementation instance.
   ///

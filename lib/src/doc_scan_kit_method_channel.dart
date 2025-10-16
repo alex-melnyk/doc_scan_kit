@@ -7,17 +7,19 @@ import 'package:flutter/services.dart';
 
 import 'doc_scan_kit_platform.dart';
 
-/// Method channel implementation of [DocScanKitPlatform].
+/// Abstract base class for method channel implementation of [DocScanKitPlatform].
 ///
-/// This class provides the default implementation for communicating with
+/// This class provides the common implementation for communicating with
 /// native platform code through Flutter's method channel system. It handles
 /// serialization of method calls and deserialization of results.
 ///
-/// This implementation is automatically registered as the default platform
-/// implementation and handles communication with both Android and iOS native code.
+/// Platform-specific implementations ([DocScanKitPlatformAndroid] and
+/// [DocScanKitPlatformIOS]) extend this class to provide the actual
+/// registration and platform-specific behavior.
+///
+/// This class is abstract and cannot be instantiated directly. Use the
+/// platform-specific implementations instead.
 abstract class DocScanKitMethodChannel extends DocScanKitPlatform {
-  DocScanKitMethodChannel();
-
   /// The method channel used to communicate with native platform implementations.
   ///
   /// This channel is used for all method calls to native code including

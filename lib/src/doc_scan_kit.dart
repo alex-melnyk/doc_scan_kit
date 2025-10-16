@@ -28,31 +28,36 @@ import 'package:doc_scan_kit/src/models/doc_scan_kit_result.dart';
 /// final results = await docScanKit.scanner();
 /// ```
 class DocScanKit {
-  /// Creates a new instance of [DocScanKit] with optional platform-specific options.
+  /// Creates a new instance of [DocScanKit] with platform-specific options.
   ///
-  /// [androidOptions] - Configuration options specific to Android platform.
-  /// [iosOptions] - Configuration options specific to iOS platform.
+  /// [androidOptions] - Configuration options for Android platform.
+  /// Defaults to [DocScanKitOptionsAndroid()] if not specified.
+  /// [iosOptions] - Configuration options for iOS platform.
+  /// Defaults to [DocScanKitOptionsIOS()] if not specified.
   ///
-  /// If platform-specific options are not provided, default options will be used.
+  /// The provided options serve as defaults but can be overridden
+  /// on a per-call basis in the [scanner] method.
   const DocScanKit({
     this.androidOptions = const DocScanKitOptionsAndroid(),
     this.iosOptions = const DocScanKitOptionsIOS(),
   });
 
-  /// Platform-specific options for Android devices.
+  /// Default platform-specific options for Android devices.
   ///
   /// These options control Android-specific behavior such as page limits,
   /// scanner modes, and gallery import capabilities.
   ///
-  /// If null, default [DocScanKitOptionsAndroid] will be used.
+  /// These serve as default values that can be overridden in individual
+  /// [scanner] method calls.
   final DocScanKitOptionsAndroid androidOptions;
 
-  /// Platform-specific options for iOS devices.
+  /// Default platform-specific options for iOS devices.
   ///
   /// These options control iOS-specific behavior such as modal presentation style,
   /// image compression quality, and UI tint colors.
   ///
-  /// If null, default [DocScanKitOptionsIOS] will be used.
+  /// These serve as default values that can be overridden in individual
+  /// [scanner] method calls.
   final DocScanKitOptionsIOS iosOptions;
 
   /// Launches the native document scanner interface and returns scanned results.
@@ -61,9 +66,15 @@ class DocScanKit {
   /// ML Kit Document Scanner on Android) and allows users to scan one or more
   /// document pages.
   ///
+  /// [androidOptions] - Optional Android-specific options for this scan session.
+  /// If not provided, uses the instance's default [androidOptions].
+  /// [iosOptions] - Optional iOS-specific options for this scan session.
+  /// If not provided, uses the instance's default [iosOptions].
+  ///
   /// The scanner behavior is controlled by the platform-specific options:
-  /// - On Android: Uses [androidOptions] or defaults
-  /// - On iOS: Uses [iosOptions] or defaults
+  /// - On Android: Uses provided [androidOptions] or instance defaults
+  /// - On iOS: Uses provided [iosOptions] or instance defaults
+  /// - Throws [UnsupportedError] on unsupported platforms
   ///
   /// Returns a [Future] that completes with a list of [DocScanKitResult] objects,
   /// each containing the file path and type (JPEG or PDF) of the scanned content.
@@ -74,11 +85,20 @@ class DocScanKit {
   ///
   /// Throws [PlatformException] if the scanner fails to initialize or
   /// if camera permissions are not granted.
+  /// Throws [UnsupportedError] if called on an unsupported platform.
   ///
   /// Example:
   /// ```dart
   /// try {
+  ///   // Use default options
   ///   final results = await docScanKit.scanner();
+  ///   
+  ///   // Or override options for this call
+  ///   final customResults = await docScanKit.scanner(
+  ///     androidOptions: DocScanKitOptionsAndroid(pageLimit: 5),
+  ///     iosOptions: DocScanKitOptionsIOS(compressionQuality: 0.5),
+  ///   );
+  ///   
   ///   for (final result in results) {
   ///     print('Scanned ${result.type.name}: ${result.path}');
   ///   }
