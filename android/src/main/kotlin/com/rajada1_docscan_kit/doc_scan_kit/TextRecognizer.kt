@@ -34,12 +34,8 @@ class TextRecognizer {
         }
     }
 
-    fun closedTextRecognizer() {
+    fun close() {
         recognitionJob?.cancel()
         textRecognizer.close()
-    }
-    
-    fun close() {
-        closedTextRecognizer()
     }
 }
