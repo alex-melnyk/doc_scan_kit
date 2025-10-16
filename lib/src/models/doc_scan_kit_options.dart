@@ -1,11 +1,13 @@
+import 'package:doc_scan_kit/src/models/doc_scan_kit_format.dart';
+
 /// DocScanKitOptions is a class that represents the options
 /// for the document scanner.
 abstract class DocScanKitOptions {
-  const DocScanKitOptions({required this.saveImage});
+  const DocScanKitOptions({this.format = DocScanKitFormat.images});
 
-  /// Set to true to enable saving the image
-  /// and returning the image path in [ScanResult.imagePath].
-  /// The default is true.
-  /// In Android imagePath is always returned
-  final bool saveImage;
+  /// Format of the scanned document.
+  final DocScanKitFormat format;
+
+  /// Converts the object to a JSON map.
+  Map<String, dynamic> toJson();
 }

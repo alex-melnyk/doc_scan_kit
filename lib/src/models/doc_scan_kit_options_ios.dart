@@ -5,9 +5,9 @@ import 'package:doc_scan_kit/src/models/modal_presentation_style_ios.dart';
 
 /// DocumentScanKitOptionsIOS is a class that represents the options
 /// for the document scanner on iOS.
-class DocumentScanKitOptionsIOS extends DocScanKitOptions {
-  const DocumentScanKitOptionsIOS({
-    super.saveImage = true,
+class DocScanKitOptionsIOS extends DocScanKitOptions {
+  const DocScanKitOptionsIOS({
+    super.format,
     this.modalPresentationStyle = ModalPresentationStyleIOS.overFullScreen,
     this.compressionQuality = 1.0,
     this.color,
@@ -30,8 +30,9 @@ class DocumentScanKitOptionsIOS extends DocScanKitOptions {
   final Color? color;
 
   /// Converts the object to a JSON map.
+  @override
   Map<String, dynamic> toJson() => {
-        'saveImage': saveImage,
+        'format': format.name,
         'modalPresentationStyle': modalPresentationStyle.name,
         'compressionQuality': compressionQuality,
         'color': color != null ? [color?.r, color?.g, color?.b, color?.a] : [],

@@ -1,7 +1,6 @@
 import 'package:doc_scan_kit/src/doc_scan_kit_method_channel.dart';
-import 'package:doc_scan_kit/src/models/android_options.dart';
-import 'package:doc_scan_kit/src/models/ios_options.dart';
-import 'package:doc_scan_kit/src/models/scan_result.dart';
+import 'package:doc_scan_kit/src/models/doc_scan_kit_options.dart';
+import 'package:doc_scan_kit/src/models/doc_scan_kit_result.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 abstract class DocScanKitPlatform extends PlatformInterface {
@@ -26,10 +25,7 @@ abstract class DocScanKitPlatform extends PlatformInterface {
   }
 
   /// Scans documents and returns a list of scan results.
-  Future<List<ScanResult>> scanner(
-    final DocumentScanKitOptionsAndroid androidOptions,
-    final DocumentScanKitOptionsIOS iosOptions,
-  );
+  Future<List<DocScanKitResult>> scanner(final DocScanKitOptions options);
 
   /// Recognizes text from image bytes
   Future<String> recognizeText(List<int> imageBytes);

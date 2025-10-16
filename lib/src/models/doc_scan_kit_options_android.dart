@@ -3,9 +3,9 @@ import 'package:doc_scan_kit/src/models/scanner_mode_android.dart';
 
 /// DocumentScanKitOptionsAndroid is a class that represents the options
 /// for the document scanner on Android.
-class DocumentScanKitOptionsAndroid extends DocScanKitOptions {
-  const DocumentScanKitOptionsAndroid({
-    super.saveImage = true,
+class DocScanKitOptionsAndroid extends DocScanKitOptions {
+  const DocScanKitOptionsAndroid({
+    super.format,
     this.pageLimit = 1,
     this.scannerMode = ScannerModeAndroid.full,
     this.isGalleryImport = true,
@@ -21,8 +21,9 @@ class DocumentScanKitOptionsAndroid extends DocScanKitOptions {
   final bool isGalleryImport;
 
   /// Converts the object to a JSON map.
+  @override
   Map<String, dynamic> toJson() => {
-        'saveImage': saveImage,
+        'format': format.name,
         'pageLimit': pageLimit,
         'scannerMode': scannerMode.name,
         'isGalleryImport': isGalleryImport,

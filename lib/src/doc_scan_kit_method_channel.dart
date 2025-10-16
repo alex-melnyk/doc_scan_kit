@@ -1,10 +1,9 @@
-import 'package:doc_scan_kit/src/models/android_options.dart';
-import 'package:doc_scan_kit/src/models/ios_options.dart';
-import 'package:doc_scan_kit/src/models/scan_result.dart';
+import 'package:doc_scan_kit/src/models/doc_scan_kit_options.dart';
+import 'package:doc_scan_kit/src/models/doc_scan_kit_result.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-import 'doc_scan_kit_platform_interface.dart';
+import 'doc_scan_kit_platform.dart';
 
 /// An implementation of [DocScanKitPlatform] that uses method channels.
 class MethodChannelDocScanKit extends DocScanKitPlatform {
@@ -16,24 +15,20 @@ class MethodChannelDocScanKit extends DocScanKitPlatform {
   final id = DateTime.now().microsecondsSinceEpoch.toString();
 
   /// Starts the document scanner and returns the scanned images
-  /// as a list of [ScanResult].
+  /// as a list of [DocScanKitResult].
   @override
-  Future<List<ScanResult>> scanner(
-    final DocumentScanKitOptionsAndroid androidOptions,
-    final DocumentScanKitOptionsIOS iosOptions,
-  ) async {
+  Future<List<DocScanKitResult>> scanner(final DocScanKitOptions options) async {
     final result = await methodChannel.invokeMethod<List<Object?>>(
       'scanKit#startDocumentScanner',
       <String, dynamic>{
-        'options': androidOptions.toJson(),
         'id': id,
-        'iosOptions': iosOptions.toJson(),
+        'options': options.toJson(),
       },
     );
 
     return result?.map((e) {
           e as Map;
-          return ScanResult(imagePath: e['path'], imagesBytes: e['bytes']);
+          return DocScanKitResult(imagePath: e['path'], imagesBytes: e['bytes']);
         }).toList() ??
         [];
   }
