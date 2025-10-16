@@ -61,7 +61,7 @@ abstract class DocScanKitPlatform extends PlatformInterface {
   /// representing the scanned documents.
   ///
   /// Should throw [PlatformException] if scanning fails or permissions are denied.
-  Future<List<DocScanKitResult>> scanner();
+  Future<List<DocScanKitResult>> scanner(final DocScanKitOptions options);
 
   /// Performs text recognition on the provided image bytes.
   ///

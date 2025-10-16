@@ -16,10 +16,7 @@ import 'doc_scan_kit_platform.dart';
 /// This implementation is automatically registered as the default platform
 /// implementation and handles communication with both Android and iOS native code.
 abstract class DocScanKitMethodChannel extends DocScanKitPlatform {
-  DocScanKitMethodChannel({required this.options});
-
-  /// The options for the document scanner.
-  final DocScanKitOptions options;
+  DocScanKitMethodChannel();
 
   /// The method channel used to communicate with native platform implementations.
   ///
@@ -39,9 +36,6 @@ abstract class DocScanKitMethodChannel extends DocScanKitPlatform {
   /// platform-specific resources properly.
   final id = DateTime.now().microsecondsSinceEpoch.toString();
 
-  /// Sets the options for the document scanner.
-  set options(final DocScanKitOptions options) => this.options = options;
-
   /// Invokes the native document scanner through method channel communication.
   ///
   /// This method serializes the provided [options] and sends them to the native
@@ -60,7 +54,7 @@ abstract class DocScanKitMethodChannel extends DocScanKitPlatform {
   ///
   /// Throws [PlatformException] if the native scanner encounters an error.
   @override
-  Future<List<DocScanKitResult>> scanner() async {
+  Future<List<DocScanKitResult>> scanner(final DocScanKitOptions options) async {
     final result = await methodChannel.invokeMethod<List<Object?>>(
       DocScanKitMethod.startDocumentScanner.platformName,
       {'id': id, 'options': options.toJson()},

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:doc_scan_kit/src/doc_scan_kit_platform.dart';
+import 'package:doc_scan_kit/src/models/doc_scan_kit_options.dart';
 import 'package:doc_scan_kit/src/models/doc_scan_kit_options_android.dart';
 import 'package:doc_scan_kit/src/models/doc_scan_kit_options_ios.dart';
 import 'package:doc_scan_kit/src/models/doc_scan_kit_result.dart';
@@ -85,8 +86,21 @@ class DocScanKit {
   ///   print('Scanning failed: $e');
   /// }
   /// ```
-  Future<List<DocScanKitResult>> scanner() {
-    return DocScanKitPlatform.instance.scanner();
+  Future<List<DocScanKitResult>> scanner({
+    DocScanKitOptionsAndroid? androidOptions,
+    DocScanKitOptionsIOS? iosOptions,
+  }) {
+    final DocScanKitOptions options;
+
+    if (Platform.isAndroid) {
+      options = androidOptions ?? this.androidOptions;
+    } else if (Platform.isIOS) {
+      options = iosOptions ?? this.iosOptions;
+    } else {
+      throw UnsupportedError('Unsupported platform');
+    }
+
+    return DocScanKitPlatform.instance.scanner(options);
   }
 
   /// Performs Optical Character Recognition (OCR) on the provided image bytes.
