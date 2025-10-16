@@ -1,8 +1,9 @@
-import 'package:doc_scan_kit/src/options/android_options.dart';
-import 'package:doc_scan_kit/src/options/ios_options.dart';
-import 'package:doc_scan_kit/src/options/scan_result.dart';
+import 'package:doc_scan_kit/src/models/android_options.dart';
+import 'package:doc_scan_kit/src/models/ios_options.dart';
+import 'package:doc_scan_kit/src/models/scan_result.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+
 import 'doc_scan_kit_platform_interface.dart';
 
 /// An implementation of [DocScanKitPlatform] that uses method channels.
@@ -13,29 +14,32 @@ class MethodChannelDocScanKit extends DocScanKitPlatform {
 
   /// Instance id.
   final id = DateTime.now().microsecondsSinceEpoch.toString();
+
+  /// Starts the document scanner and returns the scanned images
+  /// as a list of [ScanResult].
   @override
   Future<List<ScanResult>> scanner(
     final DocumentScanKitOptionsAndroid androidOptions,
-    final DocumentScanKitOptionsiOS iosOptions,
+    final DocumentScanKitOptionsIOS iosOptions,
   ) async {
-    return (await methodChannel.invokeMethod<List<Object?>>(
-                'scanKit#startDocumentScanner', <String, dynamic>{
-          'androidOptions': androidOptions.toJson(),
-          'id': id,
-          'iosOptions': iosOptions.toJson()
-        }))
-            ?.map(
-          (e) {
-            e as Map;
-            return ScanResult(imagePath: e['path'], imagesBytes: e['bytes']);
-          },
-        ).toList() ??
+    final result = await methodChannel.invokeMethod<List<Object?>>(
+      'scanKit#startDocumentScanner',
+      <String, dynamic>{
+        'androidOptions': androidOptions.toJson(),
+        'id': id,
+        'iosOptions': iosOptions.toJson(),
+      },
+    );
+
+    return result?.map((e) {
+          e as Map;
+          return ScanResult(imagePath: e['path'], imagesBytes: e['bytes']);
+        }).toList() ??
         [];
   }
 
-  @override
-
   /// Recognizes text from image bytes
+  @override
   Future<String> recognizeText(List<int> imageBytes) async {
     final result = await methodChannel.invokeMethod<String>(
       'scanKit#recognizeText',
@@ -47,9 +51,8 @@ class MethodChannelDocScanKit extends DocScanKitPlatform {
     return result ?? '';
   }
 
-  @override
-
   /// Scans for QR codes in image bytes
+  @override
   Future<String> scanQrCode(List<int> imageBytes) async {
     final result = await methodChannel.invokeMethod<String>(
       'scanKit#scanQrCode',
@@ -61,11 +64,12 @@ class MethodChannelDocScanKit extends DocScanKitPlatform {
     return result ?? '';
   }
 
-  @override
-
   /// Close the detector and release resources.
+  @override
   Future<void> close() {
-    return methodChannel
-        .invokeMethod<void>("scanKit#closeDocumentScanner", {'id': id});
+    return methodChannel.invokeMethod<void>(
+      "scanKit#closeDocumentScanner",
+      {'id': id},
+    );
   }
 }

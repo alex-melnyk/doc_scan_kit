@@ -24,7 +24,7 @@ class MockDocScanKitPlatform
   @override
   Future<List<ScanResult>> scanner(
     final DocumentScanKitOptionsAndroid optionsAndroid,
-    final DocumentScanKitOptionsiOS optionsIos,
+    final DocumentScanKitOptionsIOS optionsIos,
   ) async {
     scannerCallCount++;
     final list = await Future.value([
@@ -55,7 +55,7 @@ void main() {
 
     setUp(() {
       DocScanKitPlatform.instance = fakePlatform;
-      docScanKitPlugin = DocScanKit();
+      docScanKitPlugin = const DocScanKit();
     });
 
     tearDown(() {

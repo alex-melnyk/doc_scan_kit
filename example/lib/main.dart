@@ -58,8 +58,8 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
   bool useQrCodeScanner = true;
   bool useTextRecognizer = true;
   Color color = Colors.orange;
-  ModalPresentationStyle modalPresentationStyle =
-      ModalPresentationStyle.overFullScreen;
+  ModalPresentationStyleIOS modalPresentationStyle =
+      ModalPresentationStyleIOS.overFullScreen;
 
   // Android configuration options
   int pageLimit = 3;
@@ -73,7 +73,7 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
 
   Future<void> scan() async {
     DocScanKit instance = DocScanKit(
-      iosOptions: DocumentScanKitOptionsiOS(
+      iosOptions: DocumentScanKitOptionsIOS(
         compressionQuality: compressionQuality,
         saveImage: saveImage,
         color: color,
@@ -142,7 +142,7 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
       }
 
       DocScanKit instance = DocScanKit(
-        iosOptions: DocumentScanKitOptionsiOS(
+        iosOptions: DocumentScanKitOptionsIOS(
           compressionQuality: compressionQuality,
           saveImage: saveImage,
           color: color,
@@ -374,7 +374,7 @@ class ConfigurationScreen extends StatefulWidget {
   final bool useQrCodeScanner;
   final bool useTextRecognizer;
   final Color color;
-  final ModalPresentationStyle modalPresentationStyle;
+  final ModalPresentationStyleIOS modalPresentationStyle;
 
   // Android options
   final int pageLimit;
@@ -384,7 +384,7 @@ class ConfigurationScreen extends StatefulWidget {
   final ScannerModeAndroid scannerMode;
 
   // Callbacks
-  final Function(double, bool, bool, bool, Color, ModalPresentationStyle)
+  final Function(double, bool, bool, bool, Color, ModalPresentationStyleIOS)
       onIOSOptionsChanged;
   final Function(int, bool, bool, bool, ScannerModeAndroid)
       onAndroidOptionsChanged;
@@ -420,7 +420,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen>
   late bool _useQrCodeScanner;
   late bool _useTextRecognizer;
   late Color _color;
-  late ModalPresentationStyle _modalPresentationStyle;
+  late ModalPresentationStyleIOS _modalPresentationStyle;
 
   late int _pageLimit;
   late bool _recognizerTextAndroid;
@@ -557,8 +557,8 @@ class _ConfigurationScreenState extends State<ConfigurationScreen>
                 const Divider(),
                 const Text('Modal Presentation Style',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                DropdownButtonFormField<ModalPresentationStyle>(
-                  value: _modalPresentationStyle,
+                DropdownButtonFormField<ModalPresentationStyleIOS>(
+                  initialValue: _modalPresentationStyle,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     contentPadding: EdgeInsets.symmetric(horizontal: 12),
@@ -568,7 +568,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen>
                       setState(() => _modalPresentationStyle = value);
                     }
                   },
-                  items: ModalPresentationStyle.values
+                  items: ModalPresentationStyleIOS.values
                       .map((style) => DropdownMenuItem(
                             value: style,
                             child: Text(style.toString().split('.').last),
@@ -643,7 +643,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen>
                 const Text('Scanner Mode',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 DropdownButtonFormField<ScannerModeAndroid>(
-                  value: _scannerMode,
+                  initialValue: _scannerMode,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     contentPadding: EdgeInsets.symmetric(horizontal: 12),

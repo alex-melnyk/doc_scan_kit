@@ -1,19 +1,28 @@
-import '../doc_scan_kit.dart';
-import 'doc_scan_kit_platform_interface.dart';
 
+import 'package:doc_scan_kit/src/doc_scan_kit_platform_interface.dart';
+import 'package:doc_scan_kit/src/models/android_options.dart';
+import 'package:doc_scan_kit/src/models/ios_options.dart';
+import 'package:doc_scan_kit/src/models/scan_result.dart';
+
+/// DocScanKit is a class that provides a platform-agnostic interface for
+/// scanning documents and extracting text from them.
 class DocScanKit {
-  final DocumentScanKitOptionsAndroid? androidOptions;
-  final DocumentScanKitOptionsiOS? iosOptions;
-
-  DocScanKit({
+  const DocScanKit({
     this.androidOptions,
     this.iosOptions,
   });
 
+  /// The Android options.
+  final DocumentScanKitOptionsAndroid? androidOptions;
+  /// The iOS options.
+  final DocumentScanKitOptionsIOS? iosOptions;
+
+  /// Starts the document scanner and returns the scanned images
+  /// as a list of [ScanResult].
   Future<List<ScanResult>> scanner() {
     return DocScanKitPlatform.instance.scanner(
-        androidOptions ?? DocumentScanKitOptionsAndroid(),
-        iosOptions ?? DocumentScanKitOptionsiOS());
+        androidOptions ?? const DocumentScanKitOptionsAndroid(),
+        iosOptions ?? const DocumentScanKitOptionsIOS());
   }
 
   /// Recognizes text from the provided image bytes
@@ -30,5 +39,6 @@ class DocScanKit {
     return DocScanKitPlatform.instance.scanQrCode(imageBytes);
   }
 
+  /// Disposes of any resources used by the plugin on Android.
   Future<void> close() => DocScanKitPlatform.instance.close();
 }
