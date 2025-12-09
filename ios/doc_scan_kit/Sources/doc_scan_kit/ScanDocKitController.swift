@@ -77,16 +77,18 @@ class ScanDocKitController: UIViewController, VNDocumentCameraViewControllerDele
             case .images:
                 // Save as individual images
                 for i in (0 ..< scan.pageCount) {
-                    let image = scan.imageOfPage(at: i)
-                    if let imageData = image.jpegData(compressionQuality: self.compressionQuality) {
-                        let filePath = self.saveImg(image: imageData)
-                        
-                        resultArray.append([
-                          "type": "jpeg",
-                          "path": filePath
-                        ])
-                    } else {
-                        print("Error converting image to jpeg")
+                    autoreleasepool {
+                        let image = scan.imageOfPage(at: i)
+                        if let imageData = image.jpegData(compressionQuality: self.compressionQuality) {
+                            let filePath = self.saveImg(image: imageData)
+                            
+                            resultArray.append([
+                              "type": "jpeg",
+                              "path": filePath
+                            ])
+                        } else {
+                            print("Error converting image to jpeg")
+                        }
                     }
                 }
             }
@@ -127,13 +129,15 @@ class ScanDocKitController: UIViewController, VNDocumentCameraViewControllerDele
         let pdfDocument = PDFDocument()
         
         for i in 0..<scan.pageCount {
-            let image = scan.imageOfPage(at: i)
-            
-            // Apply compression quality to the image
-            if let imageData = image.jpegData(compressionQuality: self.compressionQuality),
-               let compressedImage = UIImage(data: imageData),
-               let pdfPage = PDFPage(image: compressedImage) {
-                pdfDocument.insert(pdfPage, at: i)
+            autoreleasepool {
+                let image = scan.imageOfPage(at: i)
+                
+                // Apply compression quality to the image
+                if let imageData = image.jpegData(compressionQuality: self.compressionQuality),
+                   let compressedImage = UIImage(data: imageData),
+                   let pdfPage = PDFPage(image: compressedImage) {
+                    pdfDocument.insert(pdfPage, at: i)
+                }
             }
         }
         
